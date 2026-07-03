@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="320" viewBox="0 0 560 320">
+	<path id="wave" d="M30 80 C 100 20, 170 140, 240 80 S 380 20, 450 80 S 530 140, 530 80" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+	<path id="loop" d="M60 200 C 200 120, 200 280, 120 240 S 240 160, 320 220" fill="none" stroke="#db2777" stroke-width="4" stroke-linecap="round"/>
+	<path id="ribbon" d="M340 300 Q 420 180 500 300" fill="#a7f3d0" stroke="#059669" stroke-width="3"/>
+	<g id="bezier-demo">
+		<line x1="60" y1="290" x2="130" y2="130" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3"/>
+		<line x1="290" y1="290" x2="220" y2="130" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3"/>
+		<path d="M60 290 C 130 130, 220 130, 290 290" fill="none" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+		<circle cx="60" cy="290" r="6" fill="#f59e0b"/>
+		<circle cx="290" cy="290" r="6" fill="#f59e0b"/>
+		<circle cx="130" cy="130" r="5" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+		<circle cx="220" cy="130" r="5" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+	</g>
+</svg>

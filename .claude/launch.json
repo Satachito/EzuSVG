@@ -1,0 +1,11 @@
+{
+	"version": "0.0.1",
+	"configurations": [
+		{
+			"name": "ezusvg",
+			"runtimeExecutable": "node",
+			"runtimeArgs": [ "tools/ezu-server.mjs" ],
+			"port": 8973
+		}
+	]
+}

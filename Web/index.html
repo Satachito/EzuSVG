@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang=en>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<meta name=description content="EzuSVG — browser-based SVG editor. Shapes, paths, text, direct XML editing. Plain .svg, no install.">
+<link rel=icon href=favicon.svg type=image/svg+xml>
+<title>EzuSVG</title>
+<style>
+:root {
+;	color-scheme			: light dark
+;	--color-bg				: light-dark( #ffffff, #000000 )
+;	--color-fg				: light-dark( #000000, #ffffff )
+;	--color-accent			: light-dark( #2563eb, #60a5fa )
+;	--color-popup-bg		: light-dark( rgba( 245, 245, 245, .95 ), rgba( 32, 32, 32, .95 ) )
+;	--color-popup-border	: light-dark( #999, #666 )
+;	--color-popup-fg		: light-dark( #111, #eee )
+;	--color-popup-hover		: light-dark( #ddd, #444 )
+;	--color-shadow			: light-dark( rgba( 0, 0, 0, .15 ), rgba( 0, 0, 0, .4 ) )
+;	--color-checker-a		: light-dark( #d4d4d4, #2a2a2a )
+;	--color-checker-b		: light-dark( #b0b0b0, #161616 )
+;	--topbar-h				: 70px
+}
+html {
+;	background				: var( --color-bg )
+;	color					: var( --color-fg )
+;	height					: 100%
+;	font-family				: courier
+}
+body {
+;	margin					: 0
+;	height					: 100vh
+;	display					: grid
+;	grid-template-rows		: auto 1fr auto
+;	grid-template-columns	: var( --nav-w, 230px ) 1fr var( --aside-w, 256px )
+;	position				: relative
+;	overflow				: hidden
+}
+body.nav-collapsed		{ --nav-w	: 0 }
+body.aside-collapsed	{ --aside-w	: 0 }
+body.nav-collapsed		> nav	{ display: none }
+body.aside-collapsed	> aside	{ display: none }
+
+.panel-toggle {
+;	flex-shrink		: 0
+;	align-self		: stretch
+;	width			: 28px
+;	display			: flex
+;	align-items		: center
+;	justify-content	: center
+;	padding			: 0
+;	border			: none
+;	background		: var( --color-popup-bg )
+;	color			: var( --color-popup-fg )
+;	cursor			: pointer
+;	font-size		: 16px
+;	font-weight		: 700
+;	opacity			: .85
+}
+.panel-toggle:hover		{ opacity: 1; background: var( --color-popup-hover ) }
+#NAV_TOGGLE				{ border-right	: 1px solid gray }
+#ASIDE_TOGGLE			{ border-left	: 1px solid gray }
+
+/* full-width header bar: independent of the nav / aside columns so collapsing
+   a side panel never shifts the header */
+.topbar {
+;	grid-row		: 1
+;	grid-column		: 1 / 4
+;	display			: flex
+;	align-items		: stretch
+;	flex-wrap		: wrap
+;	min-height		: var( --topbar-h )
+;	box-sizing		: border-box
+;	overflow-x		: auto
+;	overflow-y		: visible
+;	border-bottom	: 1px solid gray
+}
+.topbar > header {
+;	box-sizing		: border-box
+;	min-height		: 0
+;	padding			: 5px 8px
+;	border-bottom	: none
+}
+.topbar > header.controls {
+;	flex			: 1 1 320px
+;	min-width		: 0
+;	overflow		: visible
+}
+.topbar > header.brand {
+;	flex-shrink		: 0
+;	display			: flex
+;	flex-direction	: column
+;	justify-content	: center
+}
+.topbar > header.sample-panel	{ flex-shrink: 0 }
+.sample-panel {
+;	box-sizing		: border-box
+;	padding			: 4px 6px
+;	display			: flex
+;	align-items		: stretch
+}
+.sample-list {
+;	display			: grid
+;	grid-template-columns	: repeat( 3, auto )
+;	grid-template-rows		: repeat( 2, 1fr )
+;	gap				: 2px
+;	height			: 100%
+}
+.sample-list button
+,	.tool-row button {
+;	min-width		: 0
+;	min-height		: 0
+;	margin			: 0
+;	padding			: 1px 6px
+;	border			: 1px solid var( --color-popup-border )
+;	border-radius	: 4px
+;	background		: var( --color-popup-bg )
+;	color			: inherit
+;	font-family		: inherit
+;	font-size		: 10px
+;	line-height		: 1.2
+;	text-align		: center
+;	cursor			: pointer
+;	white-space		: nowrap
+;	overflow		: hidden
+;	text-overflow	: ellipsis
+}
+.sample-list button:hover
+,	.tool-row button:hover {
+;	background		: var( --color-popup-hover )
+}
+.tool-row {
+;	display			: flex
+;	align-items		: center
+;	gap				: 3px
+;	flex-wrap		: wrap
+}
+.tool-row button			{ padding: 3px 8px; font-size: 11px }
+.tool-row button.active {
+;	background		: var( --color-accent )
+;	border-color	: var( --color-accent )
+;	color			: light-dark( #fff, #000 )
+}
+.tool-row .tool-key			{ opacity: .55; margin-left: 3px }
+.tool-sep {
+;	width			: 1px
+;	align-self		: stretch
+;	margin			: 2px 4px
+;	background		: var( --color-popup-border )
+}
+.doc-size {
+;	display			: inline-flex
+;	align-items		: center
+;	gap				: 4px
+;	font-size		: 12px
+;	margin-top		: 3px
+;	flex-wrap		: wrap
+}
+.doc-size input				{ font-family: inherit; font-size: 12px }
+#ZOOM_PCT					{ min-width: 44px }
+
+svg-editor {
+;	display					: block
+;	overflow				: scroll
+;	position				: relative
+;	grid-row				: 2
+;	grid-column				: 2
+;	background				: repeating-conic-gradient( var( --color-checker-a ) 0% 25%, var( --color-checker-b ) 0% 50% ) 0 0 / 128px 128px
+}
+svg-editor:not( [data-tool=select] )	{ cursor: crosshair }
+svg-editor[data-tool=text]				{ cursor: text }
+.doc-wrap {
+;	position				: relative
+}
+.doc-wrap > svg {
+;	display					: block
+;	width					: 100%
+;	height					: 100%
+}
+.doc-wrap > svg:not( .overlay ) {
+;	background				: var( --color-bg )
+}
+.doc-wrap > svg.overlay {
+;	position				: absolute
+;	inset					: 0
+;	pointer-events			: none
+;	overflow				: visible
+}
+.sel-box {
+;	fill					: none
+;	stroke					: var( --color-accent )
+;	stroke-width			: 1.5
+}
+.hov-box {
+;	fill					: none
+;	stroke					: var( --color-accent )
+;	stroke-width			: 1
+;	stroke-dasharray		: 4 3
+;	opacity					: .7
+}
+.handle {
+;	fill					: var( --color-bg )
+;	stroke					: var( --color-accent )
+;	stroke-width			: 1.5
+;	pointer-events			: all
+}
+.handle-ctrl {
+;	stroke					: var( --color-popup-border )
+}
+.ctrl-line {
+;	stroke					: var( --color-popup-border )
+;	stroke-width			: 1
+;	stroke-dasharray		: 3 3
+;	pointer-events			: none
+}
+.marquee {
+;	fill					: color-mix( in srgb, var( --color-accent ) 12%, transparent )
+;	stroke					: var( --color-accent )
+;	stroke-width			: 1
+;	stroke-dasharray		: 5 3
+}
+
+header {
+;	border-bottom			: 1px solid gray
+;	padding					: 8px
+}
+header a
+,	footer a {
+;	color					: inherit
+}
+header a:hover
+,	footer a:hover {
+;	text-decoration			: underline
+}
+footer {
+;	border-top				: 1px solid gray
+;	padding					: 6px 8px
+;	grid-row				: 3
+;	grid-column				: 1 / 4
+;	display					: flex
+;	align-items				: center
+;	justify-content			: flex-end
+;	gap						: 8px
+;	font-size				: 11px
+}
+.debug-bar {
+;	display					: none
+;	align-items				: center
+;	gap						: 4px
+;	margin-right			: auto
+}
+body.local-dev .debug-bar {
+;	display					: flex
+}
+.debug-bar button {
+;	font-size				: 11px
+;	padding					: 2px 6px
+;	cursor					: pointer
+}
+.footer-meta {
+;	display					: flex
+;	align-items				: center
+;	flex-wrap				: wrap
+;	justify-content			: flex-end
+;	gap						: 6px
+;	font-family				: cursive
+}
+.footer-credit {
+;	font-size				: 10px
+;	opacity					: .85
+}
+
+#TEXT_DIALOG {
+;	border					: 1px solid var( --color-popup-border )
+;	border-radius			: 8px
+;	background				: var( --color-popup-bg )
+;	color					: var( --color-popup-fg )
+;	padding					: 16px
+;	box-shadow				: 0 8px 28px var( --color-shadow )
+}
+#TEXT_DIALOG::backdrop {
+;	background				: rgba( 0, 0, 0, .35 )
+}
+.id-dialog {
+;	display					: flex
+;	flex-direction			: column
+;	gap						: 8px
+;	min-width				: 280px
+;	font-size				: 13px
+}
+.id-dialog textarea {
+;	padding					: 6px 8px
+;	font-family				: inherit
+;	font-size				: 13px
+;	resize					: vertical
+}
+.id-dialog-buttons {
+;	display					: flex
+;	justify-content			: flex-end
+;	gap						: 8px
+}
+.id-dialog-buttons button {
+;	padding					: 5px 12px
+;	border					: 1px solid var( --color-popup-border )
+;	border-radius			: 6px
+;	background				: var( --color-popup-bg )
+;	color					: var( --color-popup-fg )
+;	cursor					: pointer
+;	font-family				: inherit
+;	font-size				: 12px
+}
+.id-dialog-buttons button:hover {
+;	background				: var( --color-popup-hover )
+}
+
+aside {
+;	grid-row				: 2
+;	grid-column				: 3
+;	border-left				: 1px solid gray
+;	overflow				: scroll
+;	padding					: 5px
+;	min-height				: 0
+;	min-width				: 0
+}
+aside button:not( .file-btn ) {
+;	display					: block
+;	margin-top				: 3px
+;	width					: 100%
+;	padding					: 5px 8px
+;	border					: 1px solid var( --color-popup-border )
+;	border-radius			: 6px
+;	background				: var( --color-popup-bg )
+;	color					: var( --color-popup-fg )
+;	font-family				: inherit
+;	font-size				: 12px
+;	font-weight				: 600
+;	letter-spacing			: .02em
+;	line-height				: 1
+;	cursor					: pointer
+;	box-shadow				: 0 1px 3px var( --color-shadow )
+;	transition				: background .12s, border-color .12s, transform .08s
+}
+aside button:not( .file-btn ):hover {
+;	background				: var( --color-popup-hover )
+;	transform				: translateY( -1px )
+}
+aside button:not( .file-btn ):active {
+;	transform				: translateY( 0 )
+;	box-shadow				: none
+}
+aside details {
+;	margin-top				: 5px
+}
+aside summary {
+;	cursor					: pointer
+;	font-size				: 13px
+;	margin-bottom			: 3px
+}
+.ai-panel {
+;	display					: flex
+;	flex-direction			: column
+;	gap						: 4px
+}
+.ai-config {
+;	display					: flex
+;	flex-direction			: column
+;	gap						: 4px
+}
+.ai-config > select			{ width: 100%; box-sizing: border-box }
+.ai-key-row {
+;	display					: flex
+;	gap						: 4px
+}
+.ai-key-row input			{ flex: 1 1 auto; min-width: 0; box-sizing: border-box }
+.ai-config .ai-key-btn {
+;	flex					: 0 0 auto
+;	width					: 28px
+;	margin-top				: 0
+;	padding					: 0
+;	font-size				: 13px
+}
+.ai-log {
+;	max-height				: 220px
+;	overflow-y				: auto
+;	display					: flex
+;	flex-direction			: column
+;	gap						: 4px
+;	font-size				: 11px
+;	line-height				: 1.4
+}
+.ai-log:empty				{ display: none }
+.ai-msg {
+;	padding					: 4px 6px
+;	border-radius			: 6px
+;	white-space				: pre-wrap
+;	word-break				: break-word
+}
+.ai-user {
+;	background				: var( --color-popup-hover )
+;	align-self				: flex-end
+;	max-width				: 90%
+}
+.ai-assistant				{ background: var( --color-popup-bg ); border: 1px solid var( --color-popup-border ) }
+.ai-status					{ opacity: .6; font-style: italic }
+.ai-error					{ color: #cf222e }
+.ai-input {
+;	resize					: vertical
+;	font-family				: inherit
+;	font-size				: 12px
+}
+.ai-head {
+;	display					: flex
+;	align-items				: center
+;	gap						: 4px
+}
+.ai-head-title {
+;	display					: none
+;	font-weight				: 600
+;	font-size				: 12px
+;	white-space				: nowrap
+}
+.ai-head .ai-float-btn {
+;	display					: inline-flex
+;	align-items				: center
+;	justify-content			: center
+;	flex					: 0 0 auto
+;	width					: 26px
+;	height					: 24px
+;	margin					: 0 0 0 auto
+;	padding					: 0
+;	font-size				: 14px
+;	line-height				: 1
+;	cursor					: pointer
+}
+.ai-panel.floating {
+;	position				: fixed
+;	top						: 50%
+;	left					: 50%
+;	transform				: translate( -50%, -50% )
+;	width					: min( 480px, 90vw )
+;	height					: min( 70vh, 640px )
+;	min-width				: 280px
+;	min-height				: 220px
+;	resize					: both
+;	overflow				: hidden
+;	z-index					: 1000
+;	box-sizing				: border-box
+;	padding					: 10px
+;	border					: 1px solid var( --color-popup-border )
+;	border-radius			: 8px
+;	background				: var( --color-popup-bg )
+;	color					: var( --color-popup-fg )
+;	box-shadow				: 0 8px 28px var( --color-shadow )
+}
+.ai-panel.floating .ai-head			{ cursor: move }
+.ai-panel.floating .ai-head-title	{ display: block }
+.ai-panel.floating .ai-log			{ max-height: none; flex: 1 1 auto }
+aside select {
+;	cursor				: pointer
+;	appearance			: none
+;	background-image	: linear-gradient( 45deg, transparent 50%, currentColor 50% )
+,	linear-gradient( 135deg, currentColor 50%, transparent 50% )
+;	background-position	: calc( 100% - 12px ) calc( 50% - 2px ), calc( 100% - 8px ) calc( 50% - 2px )
+;	background-size		: 4px 4px, 4px 4px
+;	background-repeat	: no-repeat
+;	padding-right		: 22px
+}
+nav {
+;	grid-row				: 2
+;	grid-column				: 1
+;	border-right			: 1px solid gray
+;	overflow				: auto
+;	min-height				: 0
+;	min-width				: 0
+}
+nav .nav-title {
+;	font-size				: 12px
+;	border-bottom			: 1px solid gray
+;	padding					: 6px 8px
+}
+tree-panel {
+;	display					: block
+;	padding					: 4px 0
+;	font-size				: 11px
+}
+.tree-row {
+;	padding					: 2px 6px
+;	cursor					: pointer
+;	white-space				: nowrap
+;	overflow				: hidden
+;	text-overflow			: ellipsis
+}
+.tree-row:hover				{ background: var( --color-popup-hover ) }
+.tree-row.sel {
+;	background				: color-mix( in srgb, var( --color-accent ) 22%, transparent )
+;	outline					: 1px solid var( --color-accent )
+;	outline-offset			: -1px
+}
+.tree-row.ghost				{ opacity: .45 }
+.tree-empty					{ padding: 4px 8px; opacity: .5; font-size: 11px }
+details {
+;	padding-left			: 8px
+}
+summary {
+;	font-size				: 12px
+;	border-bottom			: 1px solid gray
+;	padding-top				: 4px
+;	padding-bottom			: 4px
+}
+
+#NODE_MENU {
+;	display			: none
+;	position		: fixed
+;	z-index			: 2000
+;	min-width		: 140px
+;	padding			: 4px 0
+;	border			: 1px solid var( --color-popup-border )
+;	border-radius	: 4px
+;	background		: var( --color-popup-bg )
+;	color			: var( --color-popup-fg )
+;	font-size		: 13px
+;	box-shadow		: 0 4px 12px var( --color-shadow )
+}
+#NODE_MENU > button {
+;	display			: block
+;	width			: 100%
+;	text-align		: left
+;	padding			: 6px 14px
+;	border			: none
+;	background		: transparent
+;	color			: inherit
+;	font			: inherit
+;	cursor			: pointer
+}
+#NODE_MENU > button:hover {
+;	background		: var( --color-popup-hover )
+}
+#UNDER_HOVER {
+;	display			: none
+;	position		: fixed
+;	left			: 0
+;	top				: 0
+;	z-index			: 1000
+;	pointer-events	: none
+;	max-width		: 240px
+;	padding			: 4px 8px
+;	border			: 1px solid var( --color-popup-border )
+;	border-radius	: 4px
+;	background		: var( --color-popup-bg )
+;	color			: var( --color-popup-fg )
+;	font-size		: 12px
+;	overflow-wrap	: anywhere
+;	white-space		: pre-wrap
+}
+
+prop-editor {
+;	display				: block
+}
+prop-editor > div:not( .prop-block ) {
+;	display				: grid
+;	grid-template-columns	: 1fr 130px
+;	align-items			: center
+;	column-gap			: 6px
+;	margin-bottom		: 3px
+}
+prop-editor > div > span:first-child
+,	prop-editor > .prop-block > div:first-child {
+;	font-size			: 12px
+;	opacity				: .75
+;	letter-spacing		: .02em
+}
+prop-editor .prop-tag		{ font-size: 11px; text-align: right }
+prop-editor .color-pair {
+;	display				: flex
+;	gap					: 3px
+;	align-items			: center
+}
+prop-editor .color-pair input[type=color] {
+;	flex				: 0 0 26px
+;	width				: 26px
+;	height				: 24px
+;	padding				: 1px
+;	border				: 1px solid var( --color-popup-border )
+;	border-radius		: 4px
+;	background			: none
+;	cursor				: pointer
+}
+prop-editor .prop-block			{ margin-bottom: 3px }
+prop-editor .prop-block > div:first-child	{ margin-bottom: 2px }
+prop-editor textarea			{ resize: vertical }
+prop-editor.defaults .only-el	{ display: none }
+
+.file-name
+,	aside input:not( [type=checkbox] ):not( [type=file] ):not( [type=hidden] ):not( [type=color] )
+,	aside select
+,	aside textarea {
+;	width				: 100%
+;	min-width			: 0
+;	box-sizing			: border-box
+;	padding				: 5px 6px
+;	border				: 1px solid var( --color-popup-border )
+;	border-radius		: 6px
+;	background-color	: light-dark( #fff, #141414 )
+;	color				: inherit
+;	font-family			: inherit
+;	font-size			: 12px
+;	line-height			: 1.2
+}
+.file-name:focus
+,	aside input:not( [type=checkbox] ):not( [type=file] ):not( [type=hidden] ):not( [type=color] ):focus
+,	aside select:focus
+,	aside textarea:focus {
+;	outline				: 2px solid light-dark( #60a5fa, #2563eb )
+;	outline-offset		: 0
+}
+
+.file-bar {
+;	display				: grid
+;	grid-template-columns	: auto auto 1fr
+;	gap					: 4px
+;	align-items			: stretch
+}
+.file-bar .file-btn {
+;	width				: auto
+;	flex-shrink			: 0
+;	justify-self		: start
+;	padding				: 5px
+}
+.export-bar {
+;	display				: grid
+;	grid-template-columns	: 1fr 1fr
+;	gap					: 4px
+;	align-items			: stretch
+;	margin-top			: 4px
+}
+.file-section {
+;	margin-bottom		: 4px
+}
+.file-btn {
+;	display				: inline-flex
+;	align-items			: center
+;	justify-content		: center
+;	gap					: 5px
+;	width				: 100%
+;	margin-top			: 0
+;	padding				: 5px 8px
+;	border				: 1px solid var( --color-popup-border )
+;	border-radius		: 6px
+;	background			: var( --color-popup-bg )
+;	color				: var( --color-popup-fg )
+;	font-family			: inherit
+;	font-size			: 12px
+;	font-weight			: 600
+;	letter-spacing		: .02em
+;	line-height			: 1
+;	cursor				: pointer
+;	box-shadow			: 0 1px 3px var( --color-shadow )
+;	transition			: background .12s, border-color .12s, transform .08s
+}
+.file-btn:hover {
+;	background			: var( --color-popup-hover )
+;	transform			: translateY( -1px )
+}
+.file-btn:active {
+;	transform			: translateY( 0 )
+;	box-shadow			: none
+}
+.file-btn svg {
+;	width				: 15px
+;	height				: 15px
+;	flex-shrink			: 0
+}
+.file-btn-upload {
+;	border-color		: light-dark( #60a5fa, #1d4ed8 )
+;	background			: light-dark( rgba( 37, 99, 235, .1 ), rgba( 30, 64, 175, .38 ) )
+;	color				: light-dark( #1d4ed8, #bfdbfe )
+}
+.file-btn-upload:hover {
+;	background			: light-dark( rgba( 37, 99, 235, .18 ), rgba( 37, 99, 235, .48 ) )
+}
+.file-btn-download {
+;	border-color		: light-dark( #34d399, #047857 )
+;	background			: light-dark( rgba( 16, 185, 129, .1 ), rgba( 6, 95, 70, .38 ) )
+;	color				: light-dark( #047857, #a7f3d0 )
+}
+.file-btn-download:hover {
+;	background			: light-dark( rgba( 16, 185, 129, .18 ), rgba( 5, 150, 105, .48 ) )
+}
+.file-btn-export {
+;	border-color		: light-dark( #c4b5fd, #6d28d9 )
+;	background			: light-dark( rgba( 139, 92, 246, .1 ), rgba( 91, 33, 182, .38 ) )
+;	color				: light-dark( #6d28d9, #ddd6fe )
+}
+.file-btn-export:hover {
+;	background			: light-dark( rgba( 139, 92, 246, .18 ), rgba( 124, 58, 237, .48 ) )
+}
+</style>
+
+<div class=topbar>
+<button id=NAV_TOGGLE	class=panel-toggle title="Toggle left panel (document tree)">‹</button>
+<header class=brand style="font-family: fantasy; margin-right: 16px; font-size: 22px; line-height: 1.1">
+	EzuSVG
+	<div style="font-family: courier; font-size: 10px; font-weight: normal; margin-top: 2px">
+		Shapes · Paths · Text · Plain .svg
+	</div>
+</header>
+<header class=controls>
+	<div class=tool-row>
+		<button id=TOOL_SELECT	>Select<span class=tool-key>V</span></button>
+		<button id=TOOL_RECT	>Rect<span class=tool-key>R</span></button>
+		<button id=TOOL_ELLIPSE	>Ellipse<span class=tool-key>O</span></button>
+		<button id=TOOL_LINE	>Line<span class=tool-key>L</span></button>
+		<button id=TOOL_PATH	>Path<span class=tool-key>P</span></button>
+		<button id=TOOL_TEXT	>Text<span class=tool-key>T</span></button>
+		<span class=tool-sep></span>
+		<button id=ZOOM_OUT		title="Zoom out">−</button>
+		<button id=ZOOM_PCT		title="Reset zoom">100%</button>
+		<button id=ZOOM_IN		title="Zoom in">+</button>
+		<span class=tool-sep></span>
+		<button id=UNDO_BTN		title="Undo (⌘Z)">↶ Undo</button>
+		<button id=REDO_BTN		title="Redo (⇧⌘Z)">↷ Redo</button>
+	</div>
+	<div class=doc-size>
+		<label>W <input id=DOC_W type=number min=16 step=16 value=512 style="width:60px"></label>
+		<label>H <input id=DOC_H type=number min=16 step=16 value=512 style="width:60px"></label>
+		<label>viewBox <input id=DOC_VB placeholder="0 0 512 512" spellcheck=false style="width:120px"></label>
+		<button id=DOC_APPLY>Apply</button>
+	</div>
+	<div style="font-size:10px; opacity:.65; margin-top:2px; line-height:1.35">
+		hold <b>⌘</b> = draw rect · <b>⌥</b> = draw ellipse (overrides the tool)<br>
+		<b>click</b> select (again = group) · <b>drag</b> move / resize · <b>⇧click</b> add · drag empty = area select · <b>⌘Z</b> undo · <b>⌘D</b> duplicate · <b>⌫</b> delete · <b>dblclick</b> text = edit
+	</div>
+</header>
+<header class=sample-panel>
+	<div class=sample-list>
+		<button id=SAMPLE_ICONS		>Icons		</button>
+		<button id=SAMPLE_LANDSCAPE	>Landscape	</button>
+		<button id=SAMPLE_LOGO		>Logo		</button>
+		<button id=SAMPLE_FLOWCHART	>Flowchart	</button>
+		<button id=SAMPLE_CURVES	>Curves		</button>
+		<button id=SAMPLE_PATTERN	>Pattern	</button>
+	</div>
+</header>
+<button id=ASIDE_TOGGLE	class=panel-toggle title="Toggle right panel (editors)">›</button>
+</div>
+
+<nav>
+	<div class=nav-title>Document tree</div>
+	<tree-panel id=TREE_PANEL></tree-panel>
+</nav>
+
+<div id=EMPTY_HINT style="grid-row:2; grid-column:2; place-self:center; pointer-events:none; z-index:5; max-width:430px; text-align:center; font-size:13px; opacity:.6; line-height:1.8">
+	Pick <b>Rect / Ellipse / Line / Path / Text</b> above and drag on the canvas.<br>
+	Or hold <b>⌘</b> and drag = rect, <b>⌥</b> = ellipse.<br>
+	Or load a <b>Sample</b> from the list at top right ↑
+</div>
+<svg-editor id=MAIN_EDITOR></svg-editor>
+
+<aside>
+	<div class=file-section>
+		<div class=file-bar>
+			<label class="file-btn file-btn-upload" title="Open .svg file" aria-label="Open .svg file">
+				<svg viewBox="0 0 16 16" aria-hidden=true fill=none stroke=currentColor stroke-width=1.5 stroke-linecap=round stroke-linejoin=round><path d="M8 12V4M5 7l3-3 3 3"/><path d="M3 13h10"/></svg>
+				<input id=UPLOAD type=file accept=.svg,image/svg+xml hidden>
+			</label>
+			<button id=NEW_DOC class=file-btn title="New blank document">
+				<svg viewBox="0 0 16 16" aria-hidden=true fill=none stroke=currentColor stroke-width=1.5 stroke-linecap=round stroke-linejoin=round><path d="M8 3v10M3 8h10"/></svg>
+			</button>
+			<input id=FILE_NAME class=file-name placeholder=Untitled spellcheck=false>
+		</div>
+		<div class=export-bar>
+			<button id=DOWNLOAD class="file-btn file-btn-download" title="Download .svg">
+				<svg viewBox="0 0 16 16" aria-hidden=true fill=none stroke=currentColor stroke-width=1.5 stroke-linecap=round stroke-linejoin=round><path d="M8 4v8M5 9l3 3 3-3"/><path d="M3 13h10"/></svg>
+				<span>Save</span>
+			</button>
+			<button id=COPY_SVG class="file-btn file-btn-export" title="Copy SVG to clipboard (paste into Figma / Illustrator / editors)">
+				<svg viewBox="0 0 16 16" aria-hidden=true fill=none stroke=currentColor stroke-width=1.5 stroke-linecap=round stroke-linejoin=round><rect x="5" y="5" width="8" height="9" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h6"/></svg>
+				<span>Copy SVG</span>
+			</button>
+			<button id=EXPORT_PNG class="file-btn file-btn-export" title="Export PNG (2×)">
+				<svg viewBox="0 0 16 16" aria-hidden=true fill=none stroke=currentColor stroke-width=1.5 stroke-linecap=round stroke-linejoin=round><rect x="2.5" y="2.5" width="11" height="11" rx="1"/><circle cx="6" cy="6" r="1.2"/><path d="M3 12l3.5-4 3 3 2-2.5 2 2.5"/></svg>
+				<span>Export PNG</span>
+			</button>
+			<button id=EXPORT_PDF class="file-btn file-btn-export" title="Export PDF (print → Save as PDF)">
+				<svg viewBox="0 0 16 16" aria-hidden=true fill=none stroke=currentColor stroke-width=1.5 stroke-linecap=round stroke-linejoin=round><path d="M4 2.5h5.5L13 6v7.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1Z"/><path d="M9 2.5V6H12.5"/><path d="M5.5 9.5h6"/></svg>
+				<span>Export PDF</span>
+			</button>
+		</div>
+	</div>
+	<hr>
+	<details open>
+		<summary>Claude assistant</summary>
+		<div class=ai-panel id=AI_PANEL>
+			<div class=ai-head>
+				<span class=ai-head-title>Claude assistant</span>
+				<button id=AI_FLOAT type=button class=ai-float-btn title="Float panel" aria-label="Float / dock panel">⤢</button>
+			</div>
+			<div class=ai-config>
+				<div class=ai-key-row>
+					<input id=AI_KEY type=password placeholder="Anthropic API key (sk-ant-…)" spellcheck=false autocomplete=off>
+					<button id=AI_KEY_TOGGLE type=button class=ai-key-btn title="Show / hide key" aria-label="Show / hide key">👁</button>
+					<button id=AI_KEY_CLEAR type=button class=ai-key-btn title="Clear key" aria-label="Clear key">✕</button>
+				</div>
+				<select id=AI_MODEL>
+					<option value=claude-fable-5>Fable 5 (best)</option>
+					<option value=claude-opus-4-8>Opus 4.8</option>
+					<option value=claude-sonnet-5>Sonnet 5 (balanced)</option>
+					<option value=claude-haiku-4-5>Haiku 4.5 (cheap)</option>
+				</select>
+			</div>
+			<div id=AI_LOG class=ai-log></div>
+			<textarea id=AI_INPUT class=ai-input rows=2 placeholder="Describe a change… (Enter to send)"></textarea>
+			<button id=AI_SEND>Send</button>
+		</div>
+	</details>
+	<hr>
+	<details open>
+		<summary>OpenAI assistant</summary>
+		<div class=ai-panel id=OAI_PANEL>
+			<div class=ai-head>
+				<span class=ai-head-title>OpenAI assistant</span>
+				<button id=OAI_FLOAT type=button class=ai-float-btn title="Float panel" aria-label="Float / dock panel">⤢</button>
+			</div>
+			<div class=ai-config>
+				<div class=ai-key-row>
+					<input id=OAI_KEY type=password placeholder="OpenAI API key (sk-…)" spellcheck=false autocomplete=off>
+					<button id=OAI_KEY_TOGGLE type=button class=ai-key-btn title="Show / hide key" aria-label="Show / hide key">👁</button>
+					<button id=OAI_KEY_CLEAR type=button class=ai-key-btn title="Clear key" aria-label="Clear key">✕</button>
+				</div>
+				<select id=OAI_MODEL>
+					<option value=gpt-5>gpt-5 (best)</option>
+					<option value=gpt-5-mini>gpt-5-mini</option>
+					<option value=gpt-4o>gpt-4o</option>
+					<option value=gpt-4o-mini>gpt-4o-mini (cheap)</option>
+				</select>
+			</div>
+			<div id=OAI_LOG class=ai-log></div>
+			<textarea id=OAI_INPUT class=ai-input rows=2 placeholder="Describe a change… (Enter to send)"></textarea>
+			<button id=OAI_SEND>Send</button>
+		</div>
+	</details>
+	<hr>
+	<details open>
+		<summary>Properties</summary>
+		<prop-editor id=PROP_EDITOR></prop-editor>
+	</details>
+	<hr>
+	<details open>
+		<summary>Source</summary>
+		<textarea id=SOURCE rows=14 spellcheck=false style="resize:vertical; font-size:11px"></textarea>
+		<button id=APPLY_SOURCE>Apply Source</button>
+	</details>
+</aside>
+
+<footer>
+	<div class=debug-bar>
+		<button			id=DUMP_SVG			>Dump SVG		</button>
+		<button			id=DUMP_JOBS		>Dump Jobs		</button>
+		<button			id=FORCE_DRAW		>Force Draw		</button>
+	</div>
+	<div class=footer-meta>
+		<a href=https://github.com/Satachito/EzuSVG target=_blank rel=noopener>GitHub</a>
+		<span aria-hidden=true>·</span>
+		<a href=https://github.com/Satachito/Zukai target=_blank rel=noopener>Zukai</a>
+		<span class=footer-credit>Written by Satoru Ogura, and AIs.</span>
+	</div>
+	<div			id=UNDER_HOVER		></div>
+	<div			id=NODE_MENU		>
+		<button		id=NODE_MENU_TEXT		>Edit text</button>
+		<button		id=NODE_MENU_FRONT		>Bring to front</button>
+		<button		id=NODE_MENU_BACK		>Send to back</button>
+		<button		id=NODE_MENU_DUP		>Duplicate</button>
+		<button		id=NODE_MENU_COPY		>Copy SVG</button>
+		<button		id=NODE_MENU_DELETE		>Delete</button>
+	</div>
+</footer>
+
+<dialog id=TEXT_DIALOG>
+	<form id=TEXT_DIALOG_FORM class=id-dialog>
+		<label for=TEXT_INPUT><b>Edit text</b></label>
+		<textarea id=TEXT_INPUT rows=3 spellcheck=false></textarea>
+		<div class=id-dialog-buttons>
+			<button type=button id=TEXT_DIALOG_CANCEL>Cancel</button>
+			<button type=submit id=TEXT_DIALOG_OK>OK</button>
+		</div>
+	</form>
+</dialog>
+
+<script type=module>
+
+import {
+	Report
+,	Load
+,	Serialize
+,	Parse
+,	Mutate
+,	SetText
+,	BLANK
+,	STORAGE_KEY
+}	from './Application.js'
+
+import {
+	Undo
+,	Redo
+,	DumpJobs
+}	from './Jobs.js'
+
+import './svg-editor.js'
+import './prop-editor.js'
+import './tree-panel.js'
+import './ai-api.js'
+import { initAIPanel } from './ai-panel.js'
+import { initOpenAIPanel } from './ai-panel-openai.js'
+import { loadSVGFile, initLiveReload, setWatchPath } from './live-reload.js'
+
+import {
+	saveSVG
+,	copySVG
+,	exportPNG
+,	printPDF
+}	from './Export.js'
+
+const
+isLocalDev = /^(localhost|127\.0\.0\.1|\[::1\])$/.test( location.hostname )
+	|| location.protocol === 'file:'
+if	( isLocalDev ) document.body.classList.add( 'local-dev' )
+
+//	Panel toggles ------------------------------------------------------------
+
+const
+ApplyPanel = ( cls, btn, collapsed, glyphOpen, glyphClosed ) => {
+	document.body.classList.toggle( cls, collapsed )
+	btn.textContent = collapsed ? glyphClosed : glyphOpen
+	localStorage.setItem( cls, collapsed ? '1' : '' )
+}
+NAV_TOGGLE		.onclick = () => ApplyPanel( 'nav-collapsed',	NAV_TOGGLE,		!document.body.classList.contains( 'nav-collapsed'	), '‹', '›' )
+ASIDE_TOGGLE	.onclick = () => ApplyPanel( 'aside-collapsed',	ASIDE_TOGGLE,	!document.body.classList.contains( 'aside-collapsed'	), '›', '‹' )
+ApplyPanel( 'nav-collapsed',	NAV_TOGGLE,		localStorage.getItem( 'nav-collapsed'	) === '1', '‹', '›' )
+ApplyPanel( 'aside-collapsed',	ASIDE_TOGGLE,	localStorage.getItem( 'aside-collapsed'	) === '1', '›', '‹' )
+
+//	Tools --------------------------------------------------------------------
+
+const
+TOOLS = {
+	select	: TOOL_SELECT
+,	rect	: TOOL_RECT
+,	ellipse	: TOOL_ELLIPSE
+,	line	: TOOL_LINE
+,	path	: TOOL_PATH
+,	text	: TOOL_TEXT
+}
+const
+SyncToolButtons = () => Object.entries( TOOLS ).forEach(
+	( [ k, b ] ) => b.classList.toggle( 'active', k === MAIN_EDITOR.tool )
+)
+Object.entries( TOOLS ).forEach( ( [ k, b ] ) => b.onclick = () => MAIN_EDITOR.SetTool( k ) )
+window.addEventListener( 'tool-changed', SyncToolButtons )
+
+//	Zoom ---------------------------------------------------------------------
+
+ZOOM_IN		.onclick = () => MAIN_EDITOR.SetZoom( MAIN_EDITOR.zoom * 1.25 )
+ZOOM_OUT	.onclick = () => MAIN_EDITOR.SetZoom( MAIN_EDITOR.zoom / 1.25 )
+ZOOM_PCT	.onclick = () => MAIN_EDITOR.SetZoom( 1 )
+
+//	Undo / redo --------------------------------------------------------------
+
+UNDO_BTN	.onclick = () => Undo().catch( Report )
+REDO_BTN	.onclick = () => Redo().catch( Report )
+
+//	Document size ------------------------------------------------------------
+
+const
+SyncDocInputs = () => {
+	const
+	[ w, h, vb ] = MAIN_EDITOR.DocSize()
+	DOC_W.value		= w
+	DOC_H.value		= h
+	DOC_VB.value	= vb
+}
+DOC_APPLY	.onclick = () => {
+	const
+	w = Math.round( Number( DOC_W.value ) )
+,	h = Math.round( Number( DOC_H.value ) )
+	if	( !( w >= 16 && h >= 16 ) )	return Report( 'Document width and height must be at least 16.' )
+	MAIN_EDITOR.SetDocSize( w, h, DOC_VB.value.trim() )
+}
+
+//	Samples ------------------------------------------------------------------
+
+const
+LoadSample = async ( path, name ) => {
+	await loadSVGFile( path, { SyncDocInputs, FILE_NAME } )
+	FILE_NAME.value = name
+}
+SAMPLE_ICONS		.onclick = () => LoadSample( 'Samples/Icons.svg',		'Icons'		).catch( Report )
+SAMPLE_LANDSCAPE	.onclick = () => LoadSample( 'Samples/Landscape.svg',	'Landscape'	).catch( Report )
+SAMPLE_LOGO			.onclick = () => LoadSample( 'Samples/Logo.svg',		'Logo'		).catch( Report )
+SAMPLE_FLOWCHART	.onclick = () => LoadSample( 'Samples/Flowchart.svg',	'Flowchart'	).catch( Report )
+SAMPLE_CURVES		.onclick = () => LoadSample( 'Samples/Curves.svg',		'Curves'	).catch( Report )
+SAMPLE_PATTERN		.onclick = () => LoadSample( 'Samples/Pattern.svg',		'Pattern'	).catch( Report )
+
+//	Debug --------------------------------------------------------------------
+
+DUMP_SVG	.onclick = () => console.log( Serialize() )
+DUMP_JOBS	.onclick = DumpJobs
+FORCE_DRAW	.onclick = () => MAIN_EDITOR.Draw()
+
+//	File ---------------------------------------------------------------------
+
+NEW_DOC		.onclick = () => {
+	Load( BLANK() )
+	FILE_NAME.value = ''
+}
+UPLOAD		.onchange = async ev => {
+	const
+	[ file ] = ev.target.files
+	if	( file ) {
+		try {
+			Load( await file.text() )
+			FILE_NAME.value = file.name
+			//	uploaded files are not on-server paths — disable live .svg watch
+			setWatchPath( null )
+			sessionStorage.removeItem( 'ezu-watch' )
+		} catch ( er ) {
+			Report( er )
+		} finally {
+			ev.target.value = ''
+		}
+	}
+}
+DOWNLOAD	.onclick = () => saveSVG( FILE_NAME.value )
+EXPORT_PNG	.onclick = () => exportPNG( FILE_NAME.value ).catch( Report )
+EXPORT_PDF	.onclick = () => { try { printPDF( FILE_NAME.value ) } catch ( er ) { Report( er ) } }
+COPY_SVG	.onclick = async () => {
+	const
+	label = COPY_SVG.querySelector( 'span' )
+	try {
+		await copySVG()
+		const
+		prev = label.textContent
+		label.textContent = 'Copied!'
+		setTimeout( () => ( label.textContent = prev ), 1200 )
+	} catch ( er ) { Report( er ) }
+}
+
+//	Source panel -------------------------------------------------------------
+
+APPLY_SOURCE.onclick = () => {
+	try {
+		Mutate( 'Source', () => MAIN_EDITOR.SetSVG( Parse( SOURCE.value ) ) )
+	} catch ( er ) {
+		Report( er )
+	}
+}
+
+//	AI panels ----------------------------------------------------------------
+
+initAIPanel()
+initOpenAIPanel()
+
+//	Float / dock an AI panel: the docked panel pops out into a larger fixed box
+//	over the canvas, draggable by its header. State persists in localStorage.
+const
+makeFloatable = ( panel, btn, storeKey ) => {
+	const
+	setFloat = on => {
+		panel.classList.toggle( 'floating', on )
+		on || ( panel.style.left = panel.style.top = panel.style.right = panel.style.transform = '' )
+		btn.textContent	= on ? '⤓' : '⤢'
+		btn.title		= on ? 'Dock panel' : 'Float panel'
+		localStorage.setItem( storeKey, on ? '1' : '' )
+	}
+	btn.onclick = () => setFloat( !panel.classList.contains( 'floating' ) )
+
+	const
+	head = panel.querySelector( '.ai-head' )
+	let	drag = null
+	head.onpointerdown = ev => {
+		if	( !panel.classList.contains( 'floating' ) || ev.target === btn ) return
+		const	r = panel.getBoundingClientRect()
+		drag = { dx: ev.clientX - r.left, dy: ev.clientY - r.top }
+		//	switch from the centered transform to absolute left/top for dragging
+		panel.style.transform	= 'none'
+		panel.style.left		= `${ r.left }px`
+		panel.style.top			= `${ r.top }px`
+		panel.style.right		= 'auto'
+		head.setPointerCapture( ev.pointerId )
+	}
+	head.onpointermove = ev => {
+		if	( !drag ) return
+		panel.style.left	= `${ ev.clientX - drag.dx }px`
+		panel.style.top		= `${ ev.clientY - drag.dy }px`
+	}
+	head.onpointerup = ev => { drag = null; head.releasePointerCapture?.( ev.pointerId ) }
+
+	setFloat( localStorage.getItem( storeKey ) === '1' )
+}
+makeFloatable( AI_PANEL,	AI_FLOAT,	'svged-ai-float'	)
+makeFloatable( OAI_PANEL,	OAI_FLOAT,	'svged-oai-float'	)
+
+//	Context menu -------------------------------------------------------------
+
+const
+HideMenu = () => NODE_MENU.style.display = ''
+window.addEventListener(
+	'element-menu'
+,	ev => {
+		const
+		{ x, y } = ev.detail
+		const
+		sel = MAIN_EDITOR.Selected()
+		NODE_MENU_TEXT.style.display = sel.length === 1 && sel[ 0 ].localName === 'text' ? '' : 'none'
+		NODE_MENU.style.display	= 'block'
+		NODE_MENU.style.left	= `${ Math.min( x, innerWidth - 160 ) }px`
+		NODE_MENU.style.top		= `${ Math.min( y, innerHeight - NODE_MENU.offsetHeight - 8 ) }px`
+	}
+)
+document.addEventListener( 'pointerdown', ev => ev.target.closest?.( '#NODE_MENU' ) || HideMenu() )
+NODE_MENU_TEXT	.onclick = () => ( HideMenu(), OpenTextDialog( MAIN_EDITOR.Selected()[ 0 ] ) )
+NODE_MENU_FRONT	.onclick = () => ( HideMenu(), MAIN_EDITOR.ToFront() )
+NODE_MENU_BACK	.onclick = () => ( HideMenu(), MAIN_EDITOR.ToBack() )
+NODE_MENU_DUP	.onclick = () => ( HideMenu(), MAIN_EDITOR.DuplicateSelected() )
+NODE_MENU_COPY	.onclick = () => ( HideMenu(), void MAIN_EDITOR.CopySelected() )
+NODE_MENU_DELETE.onclick = () => ( HideMenu(), MAIN_EDITOR.DeleteSelected() )
+
+//	Text dialog --------------------------------------------------------------
+
+let	pendingText = null
+const
+OpenTextDialog = el => {
+	if	( !el ) return
+	pendingText = el
+	TEXT_INPUT.value = el.querySelectorAll( 'tspan' ).length
+		?	[ ...el.querySelectorAll( 'tspan' ) ].map( _ => _.textContent ).join( '\n' )
+		:	el.textContent
+	TEXT_DIALOG.showModal()
+	TEXT_INPUT.select()
+}
+window.addEventListener( 'text-edit', ev => OpenTextDialog( ev.detail ) )
+TEXT_DIALOG_FORM.onsubmit = ev => {
+	ev.preventDefault()
+	pendingText && Mutate( 'Text', () => SetText( pendingText, TEXT_INPUT.value ) )
+	pendingText = null
+	TEXT_DIALOG.close()
+}
+TEXT_DIALOG_CANCEL.onclick = () => ( pendingText = null, TEXT_DIALOG.close() )
+
+//	Keyboard -----------------------------------------------------------------
+
+window.addEventListener(
+	'keydown'
+,	ev => {
+		if	( ev.target.closest?.( 'input, textarea, select' ) ) return
+		if	( document.querySelector( 'dialog[open]' ) ) return
+		const
+		M = ev.metaKey || ev.ctrlKey
+		const
+		k = ev.key
+		if	( M ) {
+			switch ( k.toLowerCase() ) {
+			case 'z'	: return ev.preventDefault(), void ( ev.shiftKey ? Redo() : Undo() ).catch( Report )
+			case 'a'	: return ev.preventDefault(), MAIN_EDITOR.SelectAll()
+			case 'd'	: return ev.preventDefault(), MAIN_EDITOR.DuplicateSelected()
+			case 'c'	: return ev.preventDefault(), void MAIN_EDITOR.CopySelected()
+			case 'v'	: return ev.preventDefault(), MAIN_EDITOR.Paste()
+			}
+			return
+		}
+		switch ( k ) {
+		case 'Backspace'	:
+		case 'Delete'		: return ev.preventDefault(), MAIN_EDITOR.DeleteSelected()
+		case 'Escape'		: return MAIN_EDITOR.Escape()
+		case 'ArrowLeft'	: return ev.preventDefault(), MAIN_EDITOR.Nudge( ev.shiftKey ? -10 : -1, 0 )
+		case 'ArrowRight'	: return ev.preventDefault(), MAIN_EDITOR.Nudge( ev.shiftKey ?  10 :  1, 0 )
+		case 'ArrowUp'		: return ev.preventDefault(), MAIN_EDITOR.Nudge( 0, ev.shiftKey ? -10 : -1 )
+		case 'ArrowDown'	: return ev.preventDefault(), MAIN_EDITOR.Nudge( 0, ev.shiftKey ?  10 :  1 )
+		case 'v'			: return MAIN_EDITOR.SetTool( 'select'	)
+		case 'r'			: return MAIN_EDITOR.SetTool( 'rect'	)
+		case 'o'			: return MAIN_EDITOR.SetTool( 'ellipse'	)
+		case 'l'			: return MAIN_EDITOR.SetTool( 'line'	)
+		case 'p'			: return MAIN_EDITOR.SetTool( 'path'	)
+		case 't'			: return MAIN_EDITOR.SetTool( 'text'	)
+		}
+	}
+)
+
+//	Sync panels on document change --------------------------------------------
+
+window.addEventListener(
+	'doc-changed'
+,	() => {
+		document.activeElement?.closest?.( '.doc-size' ) || SyncDocInputs()
+		document.activeElement === SOURCE || ( SOURCE.value = Serialize() )
+	}
+)
+
+//	Boot ----------------------------------------------------------------------
+
+onload = async () => {
+	await initLiveReload( { SyncDocInputs, FILE_NAME }, { Report } )
+	MAIN_EDITOR.SetTool( 'select' )
+	MAIN_EDITOR.SetZoom( MAIN_EDITOR.zoom )
+	const
+	fromUrl = new URLSearchParams( location.search ).get( 'svg' )
+	if	( fromUrl ) return	//	initLiveReload loaded it
+	const
+	_ = localStorage.getItem( STORAGE_KEY )
+	try {
+		Load( _ || BLANK(), false )
+	} catch ( er ) {
+		console.error( er )
+		Load( BLANK(), false )
+	}
+	SyncDocInputs()
+}
+
+</script>

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="256" viewBox="0 0 512 256">
+	<g id="home" transform="translate(40 40) scale(2)" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+		<path d="M3 11 L12 3 L21 11"/>
+		<path d="M5 10 V21 H19 V10"/>
+	</g>
+	<g id="star" transform="translate(160 40) scale(2)" fill="#fbbf24" stroke="#d97706" stroke-width="1.5" stroke-linejoin="round">
+		<polygon points="12,2.5 14.9,8.6 21.5,9.4 16.6,14 17.9,20.6 12,17.3 6.1,20.6 7.4,14 2.5,9.4 9.1,8.6"/>
+	</g>
+	<g id="heart" transform="translate(280 40) scale(2)" fill="#fda4af" stroke="#e11d48" stroke-width="2" stroke-linejoin="round">
+		<path d="M12 20 C 5 14, 3 9, 6.5 6 C 9 4, 11.5 5.5, 12 8 C 12.5 5.5, 15 4, 17.5 6 C 21 9, 19 14, 12 20 Z"/>
+	</g>
+	<g id="mail" transform="translate(400 40) scale(2)" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+		<rect x="3" y="5" width="18" height="14" rx="2"/>
+		<path d="M3 7 L12 13 L21 7"/>
+	</g>
+	<g id="search" transform="translate(40 160) scale(2)" fill="none" stroke="#0d9488" stroke-width="2" stroke-linecap="round">
+		<circle cx="10.5" cy="10.5" r="6"/>
+		<line x1="15" y1="15" x2="20.5" y2="20.5"/>
+	</g>
+	<g id="gear" transform="translate(160 160) scale(2)" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round">
+		<circle cx="12" cy="12" r="3.5"/>
+		<line x1="18" y1="12" x2="21" y2="12"/>
+		<line x1="3" y1="12" x2="6" y2="12"/>
+		<line x1="12" y1="3" x2="12" y2="6"/>
+		<line x1="12" y1="18" x2="12" y2="21"/>
+		<line x1="16.24" y1="7.76" x2="18.36" y2="5.64"/>
+		<line x1="5.64" y1="18.36" x2="7.76" y2="16.24"/>
+		<line x1="16.24" y1="16.24" x2="18.36" y2="18.36"/>
+		<line x1="5.64" y1="5.64" x2="7.76" y2="7.76"/>
+	</g>
+	<g id="cloud" transform="translate(280 160) scale(2)" fill="#e0f2fe" stroke="#0284c7" stroke-width="2" stroke-linejoin="round">
+		<path d="M6.5 18 A3.5 3.5 0 0 1 6.5 11 A5 5 0 0 1 16 9.5 A4 4 0 0 1 16.5 18 Z"/>
+	</g>
+	<g id="check" transform="translate(400 160) scale(2)" fill="none" stroke="#16a34a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+		<path d="M4 13 L9.5 18.5 L20 6"/>
+	</g>
+</svg>

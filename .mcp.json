@@ -1,0 +1,8 @@
+{
+	"mcpServers": {
+		"ezusvg": {
+			"command": "node",
+			"args": [ "tools/ezu-mcp.mjs" ]
+		}
+	}
+}

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="380" viewBox="0 0 560 380">
+	<defs>
+		<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+			<path d="M0 0 L10 5 L0 10 Z" fill="#475569"/>
+		</marker>
+	</defs>
+	<g id="start">
+		<ellipse cx="280" cy="40" rx="70" ry="26" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+		<text x="280" y="45" font-family="sans-serif" font-size="15" text-anchor="middle" fill="#14532d">Start</text>
+	</g>
+	<line x1="280" y1="66" x2="280" y2="102" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+	<g id="process-1">
+		<rect x="200" y="104" width="160" height="48" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+		<text x="280" y="133" font-family="sans-serif" font-size="15" text-anchor="middle" fill="#1e3a8a">Load data</text>
+	</g>
+	<line x1="280" y1="152" x2="280" y2="188" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+	<g id="decision">
+		<polygon points="280,190 370,240 280,290 190,240" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+		<text x="280" y="245" font-family="sans-serif" font-size="15" text-anchor="middle" fill="#713f12">Valid?</text>
+	</g>
+	<line x1="370" y1="240" x2="452" y2="240" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+	<text x="400" y="230" font-family="sans-serif" font-size="12" fill="#64748b">yes</text>
+	<g id="process-2">
+		<rect x="454" y="216" width="90" height="48" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+		<text x="499" y="245" font-family="sans-serif" font-size="15" text-anchor="middle" fill="#1e3a8a">Save</text>
+	</g>
+	<path d="M190 240 L110 240 L110 128 L198 128" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+	<text x="140" y="230" font-family="sans-serif" font-size="12" fill="#64748b">no · retry</text>
+	<line x1="280" y1="290" x2="280" y2="326" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+	<g id="end">
+		<ellipse cx="280" cy="352" rx="70" ry="24" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+		<text x="280" y="357" font-family="sans-serif" font-size="15" text-anchor="middle" fill="#7f1d1d">End</text>
+	</g>
+</svg>

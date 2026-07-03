@@ -12,7 +12,17 @@ A sibling of [Zukai](https://github.com/Satachito/Zukai) — same look & feel,
 same code style and repo layout, but the document here is a plain inline `<svg>`
 edited in place (what you see is exactly what you save).
 
-**Live demo:** [satachito.github.io/EzuSVG](https://satachito.github.io/EzuSVG/)
+**Live demo:** [satachito.github.io/EzuSVG](https://satachito.github.io/EzuSVG/) (served from `Web/` via GitHub Actions)
+
+If the root URL shows this README instead of the editor, Pages is still deploying the
+repo root. Fix:
+
+```sh
+bash tools/fix-pages.sh
+```
+
+Or in GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions**,
+then run the **Deploy Web to GitHub Pages** workflow.
 
 ## Features
 
@@ -83,5 +93,6 @@ EzuSVG/
 ├── Samples/          Example .svg files
 ├── tools/            ezu-server, ezu-mcp, utilities
 ├── .mcp.json         Cursor MCP config
+├── USAGE.md          AI & dev workflow guide
 └── README.md
 ```

@@ -7,7 +7,8 @@
     "dev": "node ../tools/ezu-server.mjs",
     "lint": "eslint *.js",
     "mcp": "node ../tools/ezu-mcp.mjs",
-    "tour": "node ../tools/feature-tour.mjs"
+    "tour": "node ../tools/feature-tour.mjs",
+    "playwright-demo": "node ../tools/playwright-mouse-demo.mjs"
   },
   "keywords": [
     "svg",

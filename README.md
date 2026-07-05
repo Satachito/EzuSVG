@@ -51,8 +51,12 @@ then run the **Deploy Web to GitHub Pages** workflow.
 - **Keyboard** — ⌫ delete · ⌘D duplicate · ⌘C/⌘V copy & paste · ⌘A select all ·
   arrows nudge (⇧ ×10) · Esc cancel / deselect.
 - **Zoom** — toolbar −/+, ⌘-wheel, click the percentage to reset.
-- **File** — open / save `.svg`, copy SVG to clipboard, export PNG (2×),
-  export PDF via print. The document autosaves to `localStorage`.
+- **File** — open / save `.svg` (also opens path-only `.ve` from
+  [Kiseki](https://satachito.github.io/Kiseki/)), copy SVG to clipboard,
+  export PNG (2×), export PDF via print. The document autosaves to `localStorage`.
+- **Clipboard interchange** — ⌘V pastes SVG markup from the system clipboard:
+  fragments from this app's ⌘C, whole documents from Kiseki's Copy SVG / ⌘C,
+  Figma, or hand-written markup.
 
 Sample documents live in `Samples/` (symlinked as `Web/Samples`).
 

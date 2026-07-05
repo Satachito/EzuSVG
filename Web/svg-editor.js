@@ -754,11 +754,18 @@ class EzuEditor extends HTMLElement {
 		return this.buffer
 	}
 
-	Paste() {
-		if	( !this.buffer ) return
+	//	markup: external clipboard text ( a fragment, or a whole <svg> document —
+	//	e.g. a .ve from Kiseki ); omitted → the internal copy buffer
+	Paste( markup ) {
 		const
-		doc = new DOMParser().parseFromString( `<svg xmlns="${ SVG_NS }">${ this.buffer }</svg>`, 'image/svg+xml' )
-		if	( doc.querySelector( 'parsererror' ) ) return
+		text = ( markup ?? this.buffer ?? '' ).trim().replace( /^<\?xml[^>]*\?>\s*/, '' )
+		if	( !text ) return
+		const
+		doc = new DOMParser().parseFromString(
+			/^<svg[\s>]/i.test( text ) ? text : `<svg xmlns="${ SVG_NS }">${ text }</svg>`
+		,	'image/svg+xml'
+		)
+		if	( doc.querySelector( 'parsererror' ) || doc.documentElement.nodeName !== 'svg' ) return
 		const
 		els = []
 		Mutate(

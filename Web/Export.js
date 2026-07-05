@@ -4,7 +4,7 @@ import {
 
 export	const
 baseName	= $ => {
-	$ = ( $ || '' ).trim().replace( /\.svg$/i, '' )
+	$ = ( $ || '' ).trim().replace( /\.(svg|ve)$/i, '' )
 	return $ || 'Untitled'
 }
 

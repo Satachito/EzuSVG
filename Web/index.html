@@ -764,7 +764,7 @@ prop-editor.defaults .only-el	{ display: none }
 		<div class=file-bar>
 			<label class="file-btn file-btn-upload" title="Open .svg file" aria-label="Open .svg file">
 				<svg viewBox="0 0 16 16" aria-hidden=true fill=none stroke=currentColor stroke-width=1.5 stroke-linecap=round stroke-linejoin=round><path d="M8 12V4M5 7l3-3 3 3"/><path d="M3 13h10"/></svg>
-				<input id=UPLOAD type=file accept=.svg,image/svg+xml hidden>
+				<input id=UPLOAD type=file accept=.svg,.ve,image/svg+xml hidden>
 			</label>
 			<button id=NEW_DOC class=file-btn title="New blank document">
 				<svg viewBox="0 0 16 16" aria-hidden=true fill=none stroke=currentColor stroke-width=1.5 stroke-linecap=round stroke-linejoin=round><path d="M8 3v10M3 8h10"/></svg>
@@ -1171,7 +1171,8 @@ window.addEventListener(
 			case 'a'	: return ev.preventDefault(), MAIN_EDITOR.SelectAll()
 			case 'd'	: return ev.preventDefault(), MAIN_EDITOR.DuplicateSelected()
 			case 'c'	: return ev.preventDefault(), void MAIN_EDITOR.CopySelected()
-			case 'v'	: return ev.preventDefault(), MAIN_EDITOR.Paste()
+			//	⌘V: handled by the document 'paste' listener below ( reads the
+			//	system clipboard, so markup from Kiseki / other apps pastes too )
 			}
 			return
 		}
@@ -1190,6 +1191,21 @@ window.addEventListener(
 		case 'p'			: return MAIN_EDITOR.SetTool( 'path'	)
 		case 't'			: return MAIN_EDITOR.SetTool( 'text'	)
 		}
+	}
+)
+
+//	Paste: prefer SVG markup from the system clipboard ( a fragment from our own
+//	⌘C, a whole document from Kiseki's Copy SVG / .ve, Figma, … ), fall back to
+//	the internal buffer for anything that is not markup.
+document.addEventListener(
+	'paste'
+,	ev => {
+		if	( ev.target.closest?.( 'input, textarea, select' ) ) return
+		if	( document.querySelector( 'dialog[open]' ) ) return
+		ev.preventDefault()
+		const
+		text = ( ev.clipboardData?.getData( 'image/svg+xml' ) || ev.clipboardData?.getData( 'text/plain' ) || '' ).trim()
+		MAIN_EDITOR.Paste( /^(<\?xml[^>]*\?>\s*)?<[a-zA-Z]/.test( text ) ? text : undefined )
 	}
 )
 

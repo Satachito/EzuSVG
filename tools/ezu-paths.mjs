@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 export const
 ROOT	= path.resolve( path.dirname( fileURLToPath( import.meta.url ) ), '..' )
 ,	WEB	= path.join( ROOT, 'Web' )
-,	PORT	= Number( process.env.EZU_PORT || process.env.PORT ) || 8973
+,	PORT	= Number( process.env.EZU_PORT || process.env.PORT ) || 8283
 ,	EZU_BASE	= process.env.EZU_BASE || `http://127.0.0.1:${ PORT }`
 
 export const

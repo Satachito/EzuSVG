@@ -4,8 +4,8 @@ Browser-based SVG editor (絵図 + SVG). Static, no build: plain ES modules + We
 loaded directly by `Web/index.html`. Open it from any static server, e.g.
 
 ```sh
-cd Web && python3 -m http.server 8973
-# → http://localhost:8973/
+cd Web && python3 -m http.server 8283
+# → http://localhost:8283/
 ```
 
 A sibling of [Zukai](https://github.com/Satachito/Zukai) — same look & feel,
@@ -66,7 +66,7 @@ cd Web && npm install && npm run dev
 cd ../tools && npm install   # MCP (one-time)
 ```
 
-Open `http://localhost:8973/?svg=Samples/Icons.svg`. Enable the **`ezusvg`**
+Open `http://localhost:8283/?svg=Samples/Icons.svg`. Enable the **`ezusvg`**
 MCP server in Cursor (**Settings → Tools & MCP**) or use [.mcp.json](.mcp.json).
 
 Tools: `ezu_status` · `ezu_get_svg` · `ezu_get_selection` · `ezu_select` ·

@@ -2,8 +2,8 @@
 //	EzuSVG MCP server — natural-language agents control the live SVG via ezu-server.
 //
 //	Prerequisites:
-//	  npm run dev                    ( ezu-server on :8973 )
-//	  open http://localhost:8973/?svg=Samples/Icons.svg
+//	  npm run dev                    ( ezu-server on :8283 )
+//	  open http://localhost:8283/?svg=Samples/Icons.svg
 //
 //	Claude Code / Cursor MCP config ( .mcp.json ):
 //	  { "mcpServers": { "ezusvg": { "command": "node", "args": ["tools/ezu-mcp.mjs"] } } }

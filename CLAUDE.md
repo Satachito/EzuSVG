@@ -4,7 +4,7 @@ Browser SVG editor (絵図 + SVG). Static, no build: plain ES modules + Web Comp
 directly by `Web/index.html`. Open it from any static server:
 
 ```sh
-cd Web && python3 -m http.server 8973
+cd Web && python3 -m http.server 8283
 ```
 
 Sibling of Zukai (`../Zukai`) — same repo layout, look & feel, and code style.

@@ -2,7 +2,7 @@
 //	Playwright mouse demo — visible drag / draw on the EzuSVG canvas.
 //
 //	Prerequisites:
-//	  cd Web && npm run dev          ( ezu-server on :8973 )
+//	  cd Web && npm run dev          ( ezu-server on :8283 )
 //	  cd tools && npm install
 //
 //	Run:
@@ -12,7 +12,7 @@
 import { chromium } from 'playwright'
 
 const
-PORT	= Number( process.env.EZU_PORT || process.env.PORT ) || 8973
+PORT	= Number( process.env.EZU_PORT || process.env.PORT ) || 8283
 ,	URL	= `http://localhost:${ PORT }/`
 ,	HEADLESS	= process.argv.includes( '--headless' )
 ,	SLOW_MO		= HEADLESS ? 0 : 80

@@ -5,7 +5,7 @@
       "command": "/bin/bash",
       "args": ["tools/ezu-mcp-run.sh"],
       "env": {
-        "EZU_PORT": "8973"
+        "EZU_PORT": "8283"
       }
     }
   }

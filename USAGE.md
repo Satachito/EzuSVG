@@ -40,7 +40,7 @@ Every client runs the same stdio server:
 | **`tools/ezu-mcp.mjs`** | MCP tools (`ezu_status`, `ezu_get_svg`, …) |
 | **`tools/ezu-mcp-run.sh`** | Launcher — `cd`s into `tools/` so `node_modules` resolves |
 
-The MCP process talks to **`ezu-server`** (Phase 3) on port **8973** by default. If you use another port, set **`EZU_PORT`** in the MCP server's environment **and** when starting the dev server.
+The MCP process talks to **`ezu-server`** (Phase 3) on port **8283** by default. If you use another port, set **`EZU_PORT`** in the MCP server's environment **and** when starting the dev server.
 
 ---
 
@@ -79,7 +79,7 @@ Add under `mcpServers` in `claude_desktop_config.json`:
       "command": "/bin/bash",
       "args": ["/path/to/EzuSVG/tools/ezu-mcp-run.sh"],
       "env": {
-        "EZU_PORT": "8973"
+        "EZU_PORT": "8283"
       }
     }
   }
@@ -91,7 +91,7 @@ Fully quit Claude Desktop (**Cmd+Q**) and reopen.
 ### Claude Code (CLI)
 
 ```bash
-claude mcp add ezusvg --scope project --env EZU_PORT=8973 -- /bin/bash tools/ezu-mcp-run.sh
+claude mcp add ezusvg --scope project --env EZU_PORT=8283 -- /bin/bash tools/ezu-mcp-run.sh
 ```
 
 Or use **[`.mcp.json`](.mcp.json)** at the project root.
@@ -99,7 +99,7 @@ Or use **[`.mcp.json`](.mcp.json)** at the project root.
 ### OpenAI Codex
 
 ```bash
-codex mcp add ezusvg --env EZU_PORT=8973 -- /bin/bash /path/to/EzuSVG/tools/ezu-mcp-run.sh
+codex mcp add ezusvg --env EZU_PORT=8283 -- /bin/bash /path/to/EzuSVG/tools/ezu-mcp-run.sh
 ```
 
 ---
@@ -108,13 +108,13 @@ codex mcp add ezusvg --env EZU_PORT=8973 -- /bin/bash /path/to/EzuSVG/tools/ezu-
 
 | URL | Phase 2 (auto-reload on save) | Phase 3 / 4 (live MCP) |
 |-----|------------------------------|-------------------------|
-| `http://localhost:8973/?svg=Samples/Icons.svg` | **Yes** — watches that file | **Yes** |
-| `http://localhost:8973/` | **No** (unless `ezu-watch` left in sessionStorage) | **Yes** |
+| `http://localhost:8283/?svg=Samples/Icons.svg` | **Yes** — watches that file | **Yes** |
+| `http://localhost:8283/` | **No** (unless `ezu-watch` left in sessionStorage) | **Yes** |
 | Sample button in the app | **Yes** — sets watch path | **Yes** |
 
 **Recommended for file + AI editing:** use `?svg=Samples/YourFile.svg`.
 
-**MCP-only experiments:** `http://localhost:8973/` is fine; live edits apply to whatever is on the canvas. They are **not** written to disk until `ezu_save_file`.
+**MCP-only experiments:** `http://localhost:8283/` is fine; live edits apply to whatever is on the canvas. They are **not** written to disk until `ezu_save_file`.
 
 To clear a stale watch path: DevTools → Application → Session Storage → delete `ezu-watch`, or upload a file with **↑** (upload clears the watch).
 
@@ -123,15 +123,15 @@ To clear a stale watch path: DevTools → Application → Session Storage → de
 ## Phase 2 — edit `.svg`, see it in the browser
 
 1. `npm run dev`
-2. Open `http://localhost:8973/?svg=Samples/Icons.svg`
+2. Open `http://localhost:8283/?svg=Samples/Icons.svg`
 3. Edit `Samples/Icons.svg` in your editor and **save**
 4. The browser reloads that file
 
 Port already in use:
 
 ```bash
-lsof -ti:8973 | xargs kill
-# or: EZU_PORT=8974 npm run dev
+lsof -ti:8283 | xargs kill
+# or: EZU_PORT=8280 npm run dev
 ```
 
 ---
@@ -142,13 +142,13 @@ Requires a connected browser tab (`ezu_status` → `"connected": true`).
 
 ```bash
 # Connection check
-curl -s http://127.0.0.1:8973/__ezu/status
+curl -s http://127.0.0.1:8283/__ezu/status
 
 # Read live SVG
-curl -s http://127.0.0.1:8973/__ezu/svg
+curl -s http://127.0.0.1:8283/__ezu/svg
 
 # Apply ops (example: turn #sun red)
-curl -s -X POST http://127.0.0.1:8973/__ezu/rpc \
+curl -s -X POST http://127.0.0.1:8283/__ezu/rpc \
   -H 'Content-Type: application/json' \
   -d '{"method":"apply","params":{"ops":[{"op":"update","select":"#sun","attrs":{"fill":"red"}}]}}'
 ```
@@ -231,9 +231,9 @@ Elements are addressed by CSS selector (`select`). One `ezu_apply` call = one un
 | **Cursor:** `ezusvg` not in MCP list | Open repo root; Reload Window or quit Cursor (Cmd+Q) |
 | **Cursor:** MCP listed but Disabled | Toggle **ON** in Settings → Tools & MCP |
 | `connected: false` | Open dev URL in browser; keep tab open |
-| RPC timeout | Restart `npm run dev`; close duplicate `:8973` tabs |
+| RPC timeout | Restart `npm run dev`; close duplicate `:8283` tabs |
 | Phase 2 not reloading | Use `?svg=…` or Sample button; check `ezu-watch` in sessionStorage |
-| Port 8973 in use | `lsof -ti:8973 \| xargs kill` or `EZU_PORT=8974 npm run dev` (+ set `EZU_PORT` in MCP env) |
+| Port 8283 in use | `lsof -ti:8283 \| xargs kill` or `EZU_PORT=8280 npm run dev` (+ set `EZU_PORT` in MCP env) |
 | GitHub Pages shows README | Run `bash tools/fix-pages.sh` — see README |
 
 ---

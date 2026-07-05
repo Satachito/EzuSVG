@@ -2,7 +2,10 @@
 	"mcpServers": {
 		"ezusvg": {
 			"command": "node",
-			"args": [ "tools/ezu-mcp.mjs" ]
+			"args": [ "tools/ezu-mcp.mjs" ],
+			"env": {
+				"EZU_PORT": "8283"
+			}
 		}
 	}
 }

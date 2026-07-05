@@ -5,7 +5,7 @@
 //
 //	Usage:
 //	  node tools/ezu-server.mjs
-//	  open http://localhost:8973/?svg=Samples/Icons.svg
+//	  open http://localhost:8283/?svg=Samples/Icons.svg
 
 import { createServer	} from 'node:http'
 import { createHash, randomUUID	} from 'node:crypto'
@@ -382,7 +382,7 @@ server.on( 'error', er => {
 		console.error(
 			`[ezu-server] port ${ PORT } is already in use.\n`
 			+ `  kill it:  lsof -ti:${ PORT } | xargs kill\n`
-			+ `  or use:   EZU_PORT=${ PORT + 1 } node tools/ezu-server.mjs`
+			+ `  or use:   EZU_PORT=8280 node tools/ezu-server.mjs`
 		)
 		process.exit( 1 )
 	}

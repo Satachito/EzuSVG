@@ -3,7 +3,7 @@
 //
 //	Prerequisites:
 //	  cd Web && npm run dev
-//	  open http://localhost:8973
+//	  open http://localhost:8283
 //
 //	Run:
 //	  node tools/feature-tour.mjs
@@ -20,7 +20,7 @@ const
 run	= async () => {
 	const	st = await ezuStatus()
 	if	( !st.connected ) {
-		console.error( 'No browser editor connected. Run `cd Web && npm run dev`, then open http://localhost:8973' )
+		console.error( 'No browser editor connected. Run `cd Web && npm run dev`, then open http://localhost:8283' )
 		process.exit( 1 )
 	}
 

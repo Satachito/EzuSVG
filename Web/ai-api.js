@@ -1,9 +1,8 @@
 //	AI-facing command surface for the live, in-browser SVG document.
 //
-//	Everything here mutates the live <svg> through Application.js so each
-//	apply() call is a single undo step and triggers a redraw. Exposed as
-//	window.EZU so an external agent can read and edit the document directly
-//	( same design as Zukai's window.ZU ).
+//	Everything here mutates the live <svg> through Application.js. A single
+//	apply() call is one undo step and rolls back entirely on any op failure.
+//	Exposed as window.EZU ( same design as Zukai's window.ZU ).
 
 import {
 	SVG_NS
@@ -28,72 +27,63 @@ SelPath	= el => {
 }
 
 const
-MatchAll	= ( select, issues, i ) => {
+MatchAll	= ( select, i ) => {
 	const
 	svg = MAIN_EDITOR.SVG()
-	if	( typeof select !== 'string' || !select.trim() ) {
-		issues.push( `op[${ i }] is missing "select"` )
-		return []
-	}
+	if	( typeof select !== 'string' || !select.trim() )
+		throw new Error( `op[${ i }] is missing "select"` )
 	if	( select.trim() === 'svg' ) return [ svg ]
 	let	els = []
 	try {
 		els = [ ...svg.querySelectorAll( select ) ]
 	} catch {
-		issues.push( `op[${ i }] "${ select }" is not a valid CSS selector` )
-		return []
+		throw new Error( `op[${ i }] "${ select }" is not a valid CSS selector` )
 	}
-	els.length || issues.push( `op[${ i }] "${ select }" matched no element` )
+	if	( !els.length ) throw new Error( `op[${ i }] "${ select }" matched no element` )
 	return els
 }
 
 //	Parse an SVG fragment ( one or more elements ) into imported nodes.
 const
-Fragment	= ( svg, issues, i ) => {
+Fragment	= ( svg, i ) => {
 	const
 	doc = new DOMParser().parseFromString( `<svg xmlns="${ SVG_NS }">${ svg }</svg>`, 'image/svg+xml' )
-	if	( doc.querySelector( 'parsererror' ) ) {
-		issues.push( `op[${ i }] "svg" fragment does not parse` )
-		return []
-	}
+	if	( doc.querySelector( 'parsererror' ) )
+		throw new Error( `op[${ i }] "svg" fragment does not parse` )
 	const
 	els = [ ...doc.documentElement.children ].map( _ => document.importNode( _, true ) )
-	els.length || issues.push( `op[${ i }] "svg" fragment is empty` )
+	if	( !els.length ) throw new Error( `op[${ i }] "svg" fragment is empty` )
 	return els
 }
 
 const
-ApplyOp	= ( op, issues, i ) => {
+ApplyOp	= ( op, i ) => {
 	const
 	svg = MAIN_EDITOR.SVG()
 	switch ( op.op ) {
 	case 'setDoc'	:
-		try {
-			MAIN_EDITOR.SetSVG( Parse( op.svg ) )
-		} catch ( er ) {
-			issues.push( `op[${ i }] setDoc: ${ er.message }` )
-		}
+		MAIN_EDITOR.SetSVG( Parse( op.svg ) )
 		break
 	case 'add'		: {
 		const
-		els = Fragment( op.svg, issues, i )
-		if	( !els.length ) break
+		els = Fragment( op.svg, i )
 		const
-		parent	= op.parent	? MatchAll( op.parent, issues, i )[ 0 ]	: svg
+		parent	= op.parent	? MatchAll( op.parent, i )[ 0 ]	: svg
 		const
-		before	= op.before	? MatchAll( op.before, issues, i )[ 0 ]	: null
-		parent && els.forEach( _ => before ? parent.insertBefore( _, before ) : parent.append( _ ) )
+		before	= op.before	? MatchAll( op.before, i )[ 0 ]	: null
+		if	( !parent ) throw new Error( `op[${ i }] parent matched no element` )
+		els.forEach( _ => before ? parent.insertBefore( _, before ) : parent.append( _ ) )
 		break
 	}
 	case 'update'	:
-		MatchAll( op.select, issues, i ).forEach(
+		MatchAll( op.select, i ).forEach(
 			el => {
 				Object.entries( op.attrs || {} ).forEach(
 					( [ k, v ] ) => {
 						try {
 							v == null ? el.removeAttribute( k ) : el.setAttribute( k, v )
 						} catch {
-							issues.push( `op[${ i }] cannot set attribute "${ k }"` )
+							throw new Error( `op[${ i }] cannot set attribute "${ k }"` )
 						}
 					}
 				)
@@ -102,12 +92,17 @@ ApplyOp	= ( op, issues, i ) => {
 		)
 		break
 	case 'remove'	:
-		MatchAll( op.select, issues, i ).forEach( _ => _ === svg ? issues.push( `op[${ i }] cannot remove the root <svg>` ) : _.remove() )
+		MatchAll( op.select, i ).forEach(
+			_ => {
+				if	( _ === svg ) throw new Error( `op[${ i }] cannot remove the root <svg>` )
+				_.remove()
+			}
+		)
 		break
 	case 'restack'	:
-		MatchAll( op.select, issues, i ).forEach(
+		MatchAll( op.select, i ).forEach(
 			_ => {
-				if	( _ === svg ) return issues.push( `op[${ i }] cannot restack the root <svg>` )
+				if	( _ === svg ) throw new Error( `op[${ i }] cannot restack the root <svg>` )
 				const
 				first = _.parentNode.firstElementChild
 				op.toFront === false
@@ -117,35 +112,29 @@ ApplyOp	= ( op, issues, i ) => {
 		)
 		break
 	case 'setCanvas':
-		op.width > 0	? svg.setAttribute( 'width', op.width )	: issues.push( `op[${ i }] setCanvas width must be positive` )
-		op.height > 0	? svg.setAttribute( 'height', op.height )	: issues.push( `op[${ i }] setCanvas height must be positive` )
+		if	( !( op.width > 0 ) ) throw new Error( `op[${ i }] setCanvas width must be positive` )
+		if	( !( op.height > 0 ) ) throw new Error( `op[${ i }] setCanvas height must be positive` )
+		svg.setAttribute( 'width', op.width )
+		svg.setAttribute( 'height', op.height )
 		op.viewBox && svg.setAttribute( 'viewBox', op.viewBox )
 		break
 	default			:
-		issues.push( `op[${ i }] has unknown op "${ op?.op }"` )
+		throw new Error( `op[${ i }] has unknown op "${ op?.op }"` )
 	}
 }
 
 window.EZU	= {
 	getSVG		: () => Serialize()
 ,	getSelection: () => MAIN_EDITOR.Selected().map( SelPath )
+	//	One apply() = one undo step. Any op failure rolls the whole batch back
+	//	( Mutate restores the pre-batch SVG ) and throws — no partial apply.
 ,	apply		: ops => {
-		const
-		issues = []
-		Array.isArray( ops ) || ( ops = [] )
-		ops.length || issues.push( 'no ops given' )
+		if	( !Array.isArray( ops ) ) throw new Error( 'apply expects an array of ops' )
+		if	( !ops.length ) throw new Error( 'apply expects a non-empty ops array' )
 		Mutate(
 			'AI'
-		,	() => ops.forEach(
-				( op, i ) => {
-					try {
-						ApplyOp( op, issues, i )
-					} catch ( er ) {
-						issues.push( `op[${ i }]: ${ String( er?.message || er ) }` )
-					}
-				}
-			)
+		,	() => ops.forEach( ( op, i ) => ApplyOp( op, i ) )
 		)
-		return issues
+		return []
 	}
 }

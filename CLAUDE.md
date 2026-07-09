@@ -32,7 +32,7 @@ Sibling of Zukai (`../Zukai`) — same repo layout, look & feel, and code style.
 - AI assistants mirror Zukai: `Web/ai-core.js`, `Web/ai-panel.js`,
   `Web/ai-panel-openai.js`, `Web/ai-api.js`
   (`window.EZU.getSVG / getSelection / apply( ops )` — ops address elements by
-  CSS selector; one `apply` call = one undo step).
+  CSS selector; one `apply` call = one undo step, full rollback on failure).
 - MCP mirrors Zukai: `tools/ezu-server.mjs` (serves `Web/` + WS bridge
   `/__ezu/ws` + HTTP RPC), `Web/live-reload.js` (browser side: WS ↔ `window.EZU`,
   plus `?svg=path` load & live reload), `tools/ezu-mcp.mjs` (stdio MCP).

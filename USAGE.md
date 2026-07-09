@@ -210,7 +210,7 @@ Calls `ezu_save_file`.
 
 ### `ezu_apply` ops
 
-Elements are addressed by CSS selector (`select`). One `ezu_apply` call = one undo step.
+Elements are addressed by CSS selector (`select`). One `ezu_apply` call = one undo step; any op failure rolls the whole batch back.
 
 ```
 { "op": "add",       "svg": "<circle .../>", "parent"?, "before"? }

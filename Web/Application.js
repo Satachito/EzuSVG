@@ -92,7 +92,14 @@ export	const
 Mutate	= ( label, fn ) => {
 	const
 	before = Serialize()
-	fn()
+	try {
+		fn()
+	} catch ( er ) {
+		//	full rollback — no undo entry for a failed batch
+		MAIN_EDITOR.SetSVG( Parse( before ) )
+		Changed()
+		throw er
+	}
 	Commit( label, before )
 }
 

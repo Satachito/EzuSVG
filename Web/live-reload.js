@@ -1,18 +1,28 @@
 //	Live .svg reload + WebSocket RPC bridge to window.EZU ( tools/ezu-server.mjs ).
 
-import { Load	} from './Application.js'
+import { Load, Parse, Serialize	} from './Application.js'
 
 let
 watchPath = null
 ,	ws = null
 ,	uiRef = null
 ,	pushDebounce = null
+	//	Serialize() of the document as last loaded from disk (or matched to disk).
+,	diskBaseline = null
 
 export const
 setWatchPath	= path => {
 	watchPath = path
 	path && sessionStorage.setItem( 'ezu-watch', path )
 }
+
+const
+markDiskBaseline	= () => {
+	diskBaseline = Serialize()
+}
+
+const
+normalizedSvgText	= text => new XMLSerializer().serializeToString( Parse( text ) )
 
 const
 snapshot	= () => {
@@ -75,16 +85,53 @@ handleRpc	= async msg => {
 	}
 }
 
-export const
-loadSVGFile	= async ( path, { SyncDocInputs, FILE_NAME } = {} ) => {
+const
+fetchSvgText	= async path => {
 	const
 	res = await fetch( new URL( path, import.meta.url ), { cache: 'no-store' } )
 	if	( !res.ok ) throw new Error( `${ res.status } ${ path }` )
-	Load( await res.text() )
+	return	res.text()
+}
+
+const
+applyLoadedFile	= ( path, text, { SyncDocInputs, FILE_NAME } = {} ) => {
+	Load( text )
 	setWatchPath( path )
+	markDiskBaseline()
 	FILE_NAME && ( FILE_NAME.value = path.replace( /^.*\//, '' ).replace( /\.svg$/i, '' ) )
 	SyncDocInputs?.()
 	pushSnapshot()
+}
+
+//	Explicit load (sample button, ?svg=, MCP loadSVG) — always replaces the canvas.
+export const
+loadSVGFile	= async ( path, ui = {} ) => {
+	applyLoadedFile( path, await fetchSvgText( path ), ui )
+}
+
+//	Disk watch: reload only when safe, or after the user confirms discarding edits.
+const
+reloadWatchedFile	= async path => {
+	const
+	text = await fetchSvgText( path )
+	,	diskNow = normalizedSvgText( text )
+	,	mem = Serialize()
+
+	//	Already matches disk (e.g. just saved via ezu_save_file) — refresh baseline only.
+	if	( mem === diskNow ) {
+		setWatchPath( path )
+		markDiskBaseline()
+		return
+	}
+
+	//	Unsaved in-memory edits vs last disk load — ask before discarding.
+	if	( diskBaseline != null && mem !== diskBaseline ) {
+		if	( !confirm(
+			`${ path } changed on disk.\n\nReload and discard unsaved edits?`
+		) ) return
+	}
+
+	applyLoadedFile( path, text, uiRef ?? {} )
 }
 
 const
@@ -106,7 +153,7 @@ connectBridge	= () => {
 			if	( msg.type === 'svg-changed' ) {
 				if	( !watchPath || msg.path !== watchPath ) return
 				try {
-					await loadSVGFile( watchPath, uiRef ?? {} )
+					await reloadWatchedFile( watchPath )
 				} catch ( er ) {
 					console.error( '[live-reload]', er )
 				}

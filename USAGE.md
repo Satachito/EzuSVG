@@ -127,6 +127,8 @@ To clear a stale watch path: DevTools → Application → Session Storage → de
 3. Edit `Samples/Icons.svg` in your editor and **save**
 4. The browser reloads that file
 
+If the canvas has **unsaved edits** (different from the last loaded disk version), the browser asks before reloading. Declining keeps your in-memory work; the next disk save will ask again. If the canvas already matches disk (e.g. you just ran `ezu_save_file`), reload is skipped silently.
+
 Port already in use:
 
 ```bash

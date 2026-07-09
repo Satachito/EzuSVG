@@ -15,6 +15,10 @@ import { createReadStream	} from 'node:fs'
 import path from 'node:path'
 import { ROOT, WEB, PORT, isUnderWeb	} from './ezu-paths.mjs'
 
+//	Loopback only — the unauthenticated RPC/WS bridge must not be reachable on LAN.
+const
+HOST	= process.env.EZU_HOST || '127.0.0.1'
+
 const
 WS_PATH	= '/__ezu/ws'
 ,	clients	= new Set
@@ -371,10 +375,11 @@ server = createServer( ( req, res ) => {
 
 server.on( 'upgrade', acceptWs )
 
-server.listen( PORT, () => {
-	log( `http://localhost:${ PORT }/` )
-	log( `example: http://localhost:${ PORT }/?svg=Samples/Icons.svg` )
-	log( `bridge:  GET http://127.0.0.1:${ PORT }/__ezu/status` )
+server.listen( PORT, HOST, () => {
+	log( `http://${ HOST }:${ PORT }/` )
+	log( `example: http://${ HOST }:${ PORT }/?svg=Samples/Icons.svg` )
+	log( `bridge:  GET http://${ HOST }:${ PORT }/__ezu/status` )
+	HOST === '127.0.0.1' || log( 'warning: not loopback-only; RPC has no auth — do not expose this port' )
 } )
 
 server.on( 'error', er => {

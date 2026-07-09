@@ -43,10 +43,11 @@ then run the **Deploy Web to GitHub Pages** workflow.
 - **Source** (right panel) — the live SVG markup; edit it and Apply.
 - **AI assistants** (right panel) — Claude and OpenAI panels, same as Zukai:
   bring your own API key (stored in `localStorage`, requests go straight from
-  the browser to the provider — no server, no account here). Describe a change
-  ("make the sun red", "add a snowman next to the tree") and the model edits
-  the live document through an `apply_ops` tool; each tool call is one undo
-  step. Panels float (⤢) into a draggable box over the canvas.
+  the browser to the provider — no server, no account here). Anything that can
+  run script in this origin can read the key; see **[USAGE.md](USAGE.md)**.
+  Describe a change ("make the sun red", "add a snowman next to the tree") and
+  the model edits the live document through an `apply_ops` tool; each tool call
+  is one undo step. Panels float (⤢) into a draggable box over the canvas.
 - **Undo / redo** — ⌘Z / ⇧⌘Z, snapshot-based, survives any operation.
 - **Keyboard** — ⌫ delete · ⌘D duplicate · ⌘C/⌘V copy & paste · ⌘A select all ·
   arrows nudge (⇧ ×10) · Esc cancel / deselect.

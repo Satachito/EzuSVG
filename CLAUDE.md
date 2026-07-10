@@ -29,8 +29,8 @@ Sibling of Zukai (`../Zukai`) — same repo layout, look & feel, and code style.
   moved / resized by appending to `transform`, consolidated on release.
 - Samples in `Samples/` (served via `Web/Samples` symlink); autosave key
   `tokyo.828.ezusvg` in localStorage.
-- AI assistants mirror Zukai: `Web/ai-core.js`, `Web/ai-panel.js`,
-  `Web/ai-panel-openai.js`, `Web/ai-api.js`
+- AI assistants: SAT `<ai-assistant>` (`Web/SAT/ai/`) + domain prompt
+  `Web/ai-system.js` + `Web/ai-api.js`
   (`window.EZU.getSVG / getSelection / apply( ops )` — ops address elements by
   CSS selector; one `apply` call = one undo step, full rollback on failure).
 - MCP mirrors Zukai: `tools/ezu-server.mjs` (serves `Web/` + WS bridge

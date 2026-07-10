@@ -22,6 +22,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - name: Materialize Samples for Pages
         run: |
           if [ -L Web/Samples ] || [ ! -d Web/Samples ]; then

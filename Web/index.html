@@ -5,6 +5,25 @@
 <meta name=description content="EzuSVG — browser-based SVG editor. Shapes, paths, text, direct XML editing. Plain .svg, no install.">
 <link rel=icon href=favicon.svg type=image/svg+xml>
 <title>EzuSVG</title>
+<script>
+{
+	const
+	host = location.hostname
+	,	prod = host.endsWith( 'github.io' ) || host.endsWith( '.828.tokyo' ) || host === '828.tokyo'
+	if	( prod ) {
+		const
+		id = 'G-GE5YN83V59'
+		,	s = document.createElement( 'script' )
+		s.async = true
+		s.src = `https://www.googletagmanager.com/gtag/js?id=${ id }`
+		document.head.appendChild( s )
+		window.dataLayer = window.dataLayer || []
+		function gtag(){ dataLayer.push( arguments ) }
+		gtag( 'js', new Date() )
+		gtag( 'config', id )
+	}
+}
+</script>
 <style>
 :root {
 ;	color-scheme			: light dark

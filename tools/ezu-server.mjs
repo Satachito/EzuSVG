@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-//	EzuSVG dev server: static Web/ + Samples live-reload + document RPC bridge.
+//	EzuSVG dev server: static Web/ + .svg live-reload under Web/ + document RPC bridge.
 //
 //	Browser ( window.EZU ) ↔ WebSocket ↔ this server ↔ HTTP ↔ ezu-mcp.mjs
 //
@@ -239,13 +239,15 @@ notifySvg	= abs => {
 const
 watchSvgTree	= dir => {
 	watch( dir, { recursive: true }, ( ev, name ) => {
-		if	( !name || !name.endsWith( '.svg' ) ) return
+		if	( !name || name.includes( `${ path.sep }node_modules${ path.sep }` ) || name.startsWith( `node_modules${ path.sep }` ) ) return
+		if	( !name.endsWith( '.svg' ) ) return
 		notifySvg( path.join( dir, name ) )
 	} )
 	log( 'watching', path.relative( ROOT, dir ) || '.' )
 }
 
-watchSvgTree( path.join( WEB, 'Samples' ) )
+//	Any .svg under Web/ ( Samples/, user folders, … ) — not Samples-only.
+watchSvgTree( WEB )
 
 const
 handleEzuApi	= async ( req, res, urlPath ) => {

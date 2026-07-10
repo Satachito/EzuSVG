@@ -116,19 +116,21 @@ codex mcp add ezusvg --env EZU_PORT=8283 -- /bin/bash /path/to/EzuSVG/tools/ezu-
 | `http://localhost:8283/` | **No** (unless `ezu-watch` left in sessionStorage) | **Yes** |
 | Sample button in the app | **Yes** — sets watch path | **Yes** |
 
-**Recommended for file + AI editing:** use `?svg=Samples/YourFile.svg`.
+**Recommended for file + AI editing:** use `?svg=Samples/YourFile.svg` (or any `.svg` path under `Web/`).
 
 **MCP-only experiments:** `http://localhost:8283/` is fine; live edits apply to whatever is on the canvas. They are **not** written to disk until `ezu_save_file`.
 
 To clear a stale watch path: DevTools → Application → Session Storage → delete `ezu-watch`, or upload a file with **↑** (upload clears the watch).
+
+The dev server watches **all `.svg` files under `Web/`** (including `Samples/` and any other folder you put there). `node_modules` is ignored.
 
 ---
 
 ## Phase 2 — edit `.svg`, see it in the browser
 
 1. `npm run dev`
-2. Open `http://localhost:8283/?svg=Samples/Icons.svg`
-3. Edit `Samples/Icons.svg` in your editor and **save**
+2. Open `http://localhost:8283/?svg=Samples/Icons.svg` (or `?svg=MyFolder/foo.svg` under `Web/`)
+3. Edit that file in your editor and **save**
 4. The browser reloads that file
 
 If the canvas has **unsaved edits** (different from the last loaded disk version), the browser asks before reloading. Declining keeps your in-memory work; the next disk save will ask again. If the canvas already matches disk (e.g. you just ran `ezu_save_file`), reload is skipped silently.

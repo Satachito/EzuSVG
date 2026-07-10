@@ -40,8 +40,8 @@ Redo	= async () => {
 }
 
 //	Push an already-applied mutation: redo/undo closures restore the
-//	after / before snapshots. The mutation itself is NOT re-run here so
-//	the live DOM (and the current selection) stays intact.
+//	after / before SVG snapshots ( and selection ). The mutation itself is
+//	NOT re-run here.
 export	default
 ( label, redo, undo ) => {
 	dones.push(

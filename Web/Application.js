@@ -73,18 +73,65 @@ Changed	= () => (
 
 import Do, { ClearJobs } from './Jobs.js'
 
+//	Stable-enough CSS selector for undo/redo selection restore ( prefers #id ).
+export	const
+SelPath	= el => {
+	if	( el.id ) return `#${ CSS.escape ? CSS.escape( el.id ) : el.id }`
+	const
+	parts = []
+	,	root = MAIN_EDITOR.SVG()
+	for	( let e = el; e && e !== root; e = e.parentNode ) {
+		if	( !e.parentNode ) break
+		const
+		i = [ ...e.parentNode.children ].filter( _ => _.localName === e.localName ).indexOf( e ) + 1
+		parts.unshift( `${ e.localName }:nth-of-type(${ i })` )
+	}
+	return parts.join( ' > ' )
+}
+
+export	const
+CaptureSelection	= () => {
+	const
+	svg = MAIN_EDITOR.SVG()
+	if	( !svg ) return []
+	return	MAIN_EDITOR.Selected()
+		.filter( el => svg.contains( el ) )
+		.map( SelPath )
+}
+
+export	const
+RestoreSelection	= sels => {
+	const
+	svg = MAIN_EDITOR.SVG()
+	if	( !svg || !sels?.length ) {
+		MAIN_EDITOR.Select( [] )
+		return
+	}
+	const
+	els = []
+	for ( const s of sels ) {
+		try {
+			els.push( ...svg.querySelectorAll( s ) )
+		} catch { /* ignore bad selectors */ }
+	}
+	MAIN_EDITOR.Select( els )
+}
+
 const
-Restore	= _ => async () => (
-	MAIN_EDITOR.SetSVG( Parse( _ ) )
+Restore	= ( text, sels ) => async () => (
+	MAIN_EDITOR.SetSVG( Parse( text ) )
+,	RestoreSelection( sels )
 ,	Changed()
 )
 
 //	Record an already-applied mutation against the `before` snapshot.
+//	`beforeSel` is the selection to restore on undo ( capture at gesture/edit start ).
 export	const
-Commit	= ( label, before ) => {
+Commit	= ( label, before, beforeSel = [] ) => {
 	const
 	after = Serialize()
-	before === after || Do( label, Restore( after ), Restore( before ) )
+	,	afterSel = CaptureSelection()
+	before === after || Do( label, Restore( after, afterSel ), Restore( before, beforeSel ) )
 	Changed()
 }
 
@@ -92,15 +139,17 @@ export	const
 Mutate	= ( label, fn ) => {
 	const
 	before = Serialize()
+	,	beforeSel = CaptureSelection()
 	try {
 		fn()
 	} catch ( er ) {
 		//	full rollback — no undo entry for a failed batch
 		MAIN_EDITOR.SetSVG( Parse( before ) )
+		RestoreSelection( beforeSel )
 		Changed()
 		throw er
 	}
-	Commit( label, before )
+	Commit( label, before, beforeSel )
 }
 
 export	const

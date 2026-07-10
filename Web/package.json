@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "node ../tools/ezu-server.mjs",
     "lint": "eslint *.js",
+    "test": "node --test test/*.test.mjs",
     "mcp": "node ../tools/ezu-mcp.mjs",
     "tour": "node ../tools/feature-tour.mjs",
     "playwright-demo": "node ../tools/playwright-mouse-demo.mjs"
@@ -26,6 +27,7 @@
     "eslint": "^9.39.4",
     "eslint-plugin-promise": "^7.3.0",
     "globals": "^17.6.0",
+    "linkedom": "^0.18.13",
     "typescript": "^6.0.3"
   }
 }

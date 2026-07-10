@@ -4,6 +4,7 @@ import {
 ,	Commit
 ,	GetText
 ,	SetText
+,	CaptureSelection
 }	from './Application.js'
 
 const
@@ -53,7 +54,11 @@ class PropEditor extends HTMLElement {
 	<div class="prop-block prop-d only-el"><div>path d ( live preview )</div><textarea data-d rows=5 spellcheck=false></textarea></div>
 	<div class="prop-block only-el"><div>attributes ( name = value, one per line )</div><textarea data-attrs rows=7 spellcheck=false></textarea></div>
 `
-		this.addEventListener( 'focusin'	, () => this.before ?? ( this.before = Serialize() ) )
+		this.addEventListener( 'focusin'	, () => {
+			if	( this.before != null ) return
+			this.before		= Serialize()
+			this.beforeSel	= CaptureSelection()
+		} )
 		this.addEventListener( 'input'		, ev => this.Input( ev ) )
 		this.addEventListener( 'change'		, ev => this.Change( ev ) )
 		window.addEventListener( 'selection-changed'	, () => this.SyncSel() )
@@ -65,6 +70,7 @@ class PropEditor extends HTMLElement {
 	SyncSel() {
 		this.el		= MAIN_EDITOR.Selected()[ 0 ] || null
 		this.before	= null
+		this.beforeSel	= null
 		this.Sync()
 	}
 
@@ -140,15 +146,17 @@ class PropEditor extends HTMLElement {
 	}
 
 	Change( ev ) {
-		if	( !this.el ) return void ( this.before = null )
+		if	( !this.el ) return void ( this.before = null, this.beforeSel = null )
 		const
 		t = ev.target
 		t.dataset.attrs	== null || this.ApplyAttrs( t.value )
 		t.dataset.text	== null || SetText( this.el, t.value )
 		const
 		before = this.before
+		,	beforeSel = this.beforeSel ?? []
 		this.before = null
-		before == null || Commit( 'Props', before )
+		this.beforeSel = null
+		before == null || Commit( 'Props', before, beforeSel )
 	}
 
 	ApplyAttrs( text ) {

@@ -6,6 +6,7 @@ import {
 ,	Parse
 ,	Mutate
 ,	Commit
+,	CaptureSelection
 }	from './Application.js'
 
 import {
@@ -319,6 +320,7 @@ class EzuEditor extends HTMLElement {
 		,	x0		: ev.clientX
 		,	y0		: ev.clientY
 		,	before	: Serialize()
+		,	beforeSel: CaptureSelection()
 		,	moved	: false
 		,	cycle	: was ? { el, deepest } : null
 		,	items	: this.selected.map(
@@ -355,6 +357,7 @@ class EzuEditor extends HTMLElement {
 		,	b0
 		,	inv		: m.inverse()
 		,	before	: Serialize()
+		,	beforeSel: CaptureSelection()
 		,	x0		: ev.clientX
 		,	y0		: ev.clientY
 		,	baseT	: useTransform ? ( _ ? `${ _ } ` : '' ) : null
@@ -374,6 +377,7 @@ class EzuEditor extends HTMLElement {
 		[ px, py ] = Pt( inv, ev.clientX, ev.clientY )
 		const
 		before = Serialize()
+		,	beforeSel = CaptureSelection()
 		const
 		D = PROP_EDITOR.Defaults()
 		if	( tool === 'text' ) {
@@ -389,8 +393,8 @@ class EzuEditor extends HTMLElement {
 			)
 			el.textContent = 'Text'
 			this.svg.append( el )
-			Commit( 'Text', before )
 			this.Select( [ el ] )
+			Commit( 'Text', before, beforeSel )
 			window.dispatchEvent( new CustomEvent( 'text-edit', { detail: el } ) )
 			return
 		}
@@ -414,7 +418,7 @@ class EzuEditor extends HTMLElement {
 				?	NE( 'line', { x1: R( px ), y1: R( py ), x2: R( px ), y2: R( py ), stroke: lineStroke, 'stroke-width': lineWidth, 'stroke-linecap': 'round' } )
 			:		NE( 'path', { d: `M ${ R( px ) } ${ R( py ) }`, fill: 'none', stroke: lineStroke, 'stroke-width': lineWidth, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' } )
 		this.svg.append( el )
-		this.gesture = { type: 'draw', tool, el, px, py, before, inv, pts: [ [ px, py ] ], x0: ev.clientX, y0: ev.clientY, moved: false }
+		this.gesture = { type: 'draw', tool, el, px, py, before, beforeSel, inv, pts: [ [ px, py ] ], x0: ev.clientX, y0: ev.clientY, moved: false }
 		this.setPointerCapture( ev.pointerId )
 	}
 
@@ -590,7 +594,7 @@ class EzuEditor extends HTMLElement {
 		case 'move'		:
 			if	( g.moved ) {
 				g.items.forEach( _ => _.base.transform === undefined || Bake( _.el ) )
-				Commit( 'Move', g.before )
+				Commit( 'Move', g.before, g.beforeSel )
 			} else if	( g.cycle ) {
 				//	Static click on an already-selected element: collapse a
 				//	multi-selection to it, else cycle up to the parent group
@@ -611,11 +615,11 @@ class EzuEditor extends HTMLElement {
 		}
 		case 'resize'	:
 			g.baseT === null || Bake( g.el )
-			Commit( 'Resize', g.before )
+			Commit( 'Resize', g.before, g.beforeSel )
 			break
 		case 'draw'		:
 			g.moved
-				?	( Commit( g.tool[ 0 ].toUpperCase() + g.tool.slice( 1 ), g.before ), this.Select( [ g.el ] ) )
+				?	( this.Select( [ g.el ] ), Commit( g.tool[ 0 ].toUpperCase() + g.tool.slice( 1 ), g.before, g.beforeSel ) )
 				:	g.el.remove()
 			break
 		}

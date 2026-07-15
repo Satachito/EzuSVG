@@ -655,27 +655,32 @@ prop-editor.defaults .only-el	{ display: none }
 ;	outline-offset		: 0
 }
 
-.file-bar {
-;	display				: grid
-;	grid-template-columns	: auto auto 1fr
-;	gap					: 4px
-;	align-items			: stretch
+.topbar > header.file-panel {
+;	flex-shrink		: 0
+;	display			: flex
+;	flex-direction	: column
+;	justify-content	: center
+;	gap				: 4px
+;	width			: 340px
 }
-.file-bar .file-btn {
-;	width				: auto
-;	flex-shrink			: 0
-;	justify-self		: start
-;	padding				: 5px
+.file-panel .file-row {
+;	display			: flex
+;	align-items		: center
+;	gap				: 4px
 }
-.export-bar {
-;	display				: grid
-;	grid-template-columns	: 1fr 1fr
-;	gap					: 4px
-;	align-items			: stretch
-;	margin-top			: 4px
+.file-panel .file-row .file-btn {
+;	flex			: 1 1 0
+;	width			: auto
+;	white-space		: nowrap
 }
-.file-section {
-;	margin-bottom		: 4px
+.file-panel .file-row-open .file-btn {
+;	flex			: 0 0 auto
+;	padding			: 5px
+}
+.file-panel .file-name {
+;	flex			: 1 1 auto
+;	width			: auto
+;	min-width		: 0
 }
 .file-btn {
 ;	display				: inline-flex
@@ -745,6 +750,36 @@ prop-editor.defaults .only-el	{ display: none }
 		Shapes · Paths · Text · Plain .svg
 	</div>
 </header>
+<header class=file-panel>
+	<div class="file-row file-row-open">
+		<label class="file-btn file-btn-upload" title="Open .svg file" aria-label="Open .svg file">
+			<svg viewBox="0 0 16 16" aria-hidden=true fill=none stroke=currentColor stroke-width=1.5 stroke-linecap=round stroke-linejoin=round><path d="M8 12V4M5 7l3-3 3 3"/><path d="M3 13h10"/></svg>
+			<input id=UPLOAD type=file accept=.svg,.ve,image/svg+xml hidden>
+		</label>
+		<button id=NEW_DOC class=file-btn title="New blank document">
+			<svg viewBox="0 0 16 16" aria-hidden=true fill=none stroke=currentColor stroke-width=1.5 stroke-linecap=round stroke-linejoin=round><path d="M8 3v10M3 8h10"/></svg>
+		</button>
+		<input id=FILE_NAME class=file-name placeholder=Untitled spellcheck=false>
+	</div>
+	<div class=file-row>
+		<button id=DOWNLOAD class="file-btn file-btn-download" title="Download .svg">
+			<svg viewBox="0 0 16 16" aria-hidden=true fill=none stroke=currentColor stroke-width=1.5 stroke-linecap=round stroke-linejoin=round><path d="M8 4v8M5 9l3 3 3-3"/><path d="M3 13h10"/></svg>
+			<span>Save</span>
+		</button>
+		<button id=COPY_SVG class="file-btn file-btn-export" title="Copy SVG to clipboard (paste into Figma / Illustrator / editors)">
+			<svg viewBox="0 0 16 16" aria-hidden=true fill=none stroke=currentColor stroke-width=1.5 stroke-linecap=round stroke-linejoin=round><rect x="5" y="5" width="8" height="9" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h6"/></svg>
+			<span>Copy SVG</span>
+		</button>
+		<button id=EXPORT_PNG class="file-btn file-btn-export" title="Export PNG (2×)">
+			<svg viewBox="0 0 16 16" aria-hidden=true fill=none stroke=currentColor stroke-width=1.5 stroke-linecap=round stroke-linejoin=round><rect x="2.5" y="2.5" width="11" height="11" rx="1"/><circle cx="6" cy="6" r="1.2"/><path d="M3 12l3.5-4 3 3 2-2.5 2 2.5"/></svg>
+			<span>Export PNG</span>
+		</button>
+		<button id=EXPORT_PDF class="file-btn file-btn-export" title="Export PDF (print → Save as PDF)">
+			<svg viewBox="0 0 16 16" aria-hidden=true fill=none stroke=currentColor stroke-width=1.5 stroke-linecap=round stroke-linejoin=round><path d="M4 2.5h5.5L13 6v7.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1Z"/><path d="M9 2.5V6H12.5"/><path d="M5.5 9.5h6"/></svg>
+			<span>Export PDF</span>
+		</button>
+	</div>
+</header>
 <header class=controls>
 	<div class=tool-row>
 		<button id=TOOL_SELECT	>Select<span class=tool-key>V</span></button>
@@ -798,37 +833,6 @@ prop-editor.defaults .only-el	{ display: none }
 <svg-editor id=MAIN_EDITOR></svg-editor>
 
 <aside>
-	<div class=file-section>
-		<div class=file-bar>
-			<label class="file-btn file-btn-upload" title="Open .svg file" aria-label="Open .svg file">
-				<svg viewBox="0 0 16 16" aria-hidden=true fill=none stroke=currentColor stroke-width=1.5 stroke-linecap=round stroke-linejoin=round><path d="M8 12V4M5 7l3-3 3 3"/><path d="M3 13h10"/></svg>
-				<input id=UPLOAD type=file accept=.svg,.ve,image/svg+xml hidden>
-			</label>
-			<button id=NEW_DOC class=file-btn title="New blank document">
-				<svg viewBox="0 0 16 16" aria-hidden=true fill=none stroke=currentColor stroke-width=1.5 stroke-linecap=round stroke-linejoin=round><path d="M8 3v10M3 8h10"/></svg>
-			</button>
-			<input id=FILE_NAME class=file-name placeholder=Untitled spellcheck=false>
-		</div>
-		<div class=export-bar>
-			<button id=DOWNLOAD class="file-btn file-btn-download" title="Download .svg">
-				<svg viewBox="0 0 16 16" aria-hidden=true fill=none stroke=currentColor stroke-width=1.5 stroke-linecap=round stroke-linejoin=round><path d="M8 4v8M5 9l3 3 3-3"/><path d="M3 13h10"/></svg>
-				<span>Save</span>
-			</button>
-			<button id=COPY_SVG class="file-btn file-btn-export" title="Copy SVG to clipboard (paste into Figma / Illustrator / editors)">
-				<svg viewBox="0 0 16 16" aria-hidden=true fill=none stroke=currentColor stroke-width=1.5 stroke-linecap=round stroke-linejoin=round><rect x="5" y="5" width="8" height="9" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h6"/></svg>
-				<span>Copy SVG</span>
-			</button>
-			<button id=EXPORT_PNG class="file-btn file-btn-export" title="Export PNG (2×)">
-				<svg viewBox="0 0 16 16" aria-hidden=true fill=none stroke=currentColor stroke-width=1.5 stroke-linecap=round stroke-linejoin=round><rect x="2.5" y="2.5" width="11" height="11" rx="1"/><circle cx="6" cy="6" r="1.2"/><path d="M3 12l3.5-4 3 3 2-2.5 2 2.5"/></svg>
-				<span>Export PNG</span>
-			</button>
-			<button id=EXPORT_PDF class="file-btn file-btn-export" title="Export PDF (print → Save as PDF)">
-				<svg viewBox="0 0 16 16" aria-hidden=true fill=none stroke=currentColor stroke-width=1.5 stroke-linecap=round stroke-linejoin=round><path d="M4 2.5h5.5L13 6v7.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1Z"/><path d="M9 2.5V6H12.5"/><path d="M5.5 9.5h6"/></svg>
-				<span>Export PDF</span>
-			</button>
-		</div>
-	</div>
-	<hr>
 	<details open>
 		<summary>Claude assistant</summary>
 		<ai-assistant

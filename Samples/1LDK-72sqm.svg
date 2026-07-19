@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1140 1040" width="1140" height="1040">
+	<title>1LDK 間取り図（約72㎡・ワンルーム寄り）</title>
+	<desc>東西 9.0m × 南北 8.0m。縮尺 1:100（100px＝1m）。家具なし・設備アイコンのみ。</desc>
+	<style>
+		.bg { fill: #fff; }
+		.wall-out { fill: none; stroke: #111; stroke-width: 14; stroke-linejoin: miter; }
+		.wall-in { fill: none; stroke: #111; stroke-width: 6; }
+		.wall-thin { fill: none; stroke: #111; stroke-width: 3; }
+		.zone { fill: none; stroke: #bbb; stroke-width: 1.5; stroke-dasharray: 6 5; }
+		.glass { fill: none; stroke: #111; stroke-width: 2; stroke-dasharray: 8 4; }
+		.curtain { fill: none; stroke: #444; stroke-width: 2; stroke-dasharray: 3 6; }
+		.dim { fill: none; stroke: #333; stroke-width: 1; }
+		.dim-tick { stroke: #333; stroke-width: 1; }
+		.dim-text { fill: #222; font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif; font-size: 18px; text-anchor: middle; }
+		.room { fill: #111; font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif; font-size: 20px; font-weight: 600; text-anchor: middle; }
+		.sub { fill: #333; font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif; font-size: 13px; text-anchor: middle; }
+		.fixture { fill: none; stroke: #111; stroke-width: 2; }
+		.fixture-fill { fill: #f7f7f7; stroke: #111; stroke-width: 2; }
+		.diminish { fill: none; stroke: #888; stroke-width: 1.6; stroke-dasharray: 5 4; }
+		.slider { fill: #f7f7f7; stroke: #111; stroke-width: 1.6; }
+		.glass-panel { fill: #eef4f7; stroke: #111; stroke-width: 1.6; }
+		.title { fill: #111; font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif; font-size: 22px; font-weight: 600; }
+		.meta { fill: #444; font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif; font-size: 13px; }
+	</style>
+
+	<rect class="bg" width="1140" height="1040"/>
+
+	<g id="plan" transform="translate(110,90)">
+
+		<!-- 北矢印（北東外側） -->
+		<g id="north-arrow" transform="translate(940,-10)">
+			<circle cx="0" cy="0" r="22" fill="#fff" stroke="#111" stroke-width="1.5"/>
+			<polygon points="0,-16 7,8 0,3 -7,8" fill="#111"/>
+			<text class="sub" x="0" y="36" font-size="13">北</text>
+		</g>
+
+		<!-- ===== サニタリー（東・x720–900, y300–800 = 1.8×5.0m） ===== -->
+		<g id="sanitary" transform="translate(720,300)">
+			<!-- ゾーン境界（洗濯 / 作業 / 洗面–トイレ / トイレ–浴室） -->
+			<line class="zone" x1="0" y1="95" x2="180" y2="95"/>
+			<line class="zone" x1="0" y1="165" x2="180" y2="165"/>
+			<line class="zone" x1="0" y1="375" x2="180" y2="375"/>
+
+			<!-- 1. 洗濯 ~0.95m：洗濯機・乾燥機（diminished） -->
+			<g id="washer" transform="translate(12,10)">
+				<rect class="diminish" width="72" height="66" rx="2"/>
+				<circle class="diminish" cx="36" cy="33" r="22"/>
+				<circle class="diminish" cx="36" cy="33" r="9"/>
+			</g>
+			<g id="dryer" transform="translate(96,10)">
+				<rect class="diminish" width="72" height="66" rx="2"/>
+				<circle class="diminish" cx="36" cy="33" r="22"/>
+				<circle class="diminish" cx="36" cy="33" r="7"/>
+				<line class="diminish" x1="18" y1="15" x2="54" y2="51"/>
+			</g>
+			<text class="sub" x="48" y="88" font-size="10" fill="#666">洗濯機</text>
+			<text class="sub" x="132" y="88" font-size="10" fill="#666">乾燥機</text>
+
+			<!-- 2. 作業・収納カウンター（実線） -->
+			<g id="work-counter" transform="translate(12,105)">
+				<rect class="fixture-fill" width="156" height="50" rx="2"/>
+				<line class="fixture" x1="52" y1="4" x2="52" y2="46"/>
+				<line class="fixture" x1="104" y1="4" x2="104" y2="46"/>
+				<text class="sub" x="78" y="31" font-size="10">作業・収納</text>
+			</g>
+
+			<!-- 3. 洗面：東壁密着・縦型ボウル -->
+			<g id="washbasin" transform="translate(132,180)">
+				<rect class="fixture-fill" width="44" height="78" rx="3"/>
+				<ellipse class="fixture" cx="20" cy="39" rx="12" ry="24"/>
+				<line class="fixture" x1="36" y1="39" x2="48" y2="39"/>
+				<line class="fixture" x1="48" y1="32" x2="48" y2="46"/>
+			</g>
+			<text class="sub" x="95" y="225" font-size="11" text-anchor="end">洗面台</text>
+
+			<!-- 4. 洗面–トイレ境：全幅ガラス引き戸（薄い水色戸板2枚） -->
+			<g id="glass-door-wash-toilet">
+				<line stroke="#fff" stroke-width="8" x1="0" y1="270" x2="180" y2="270"/>
+				<rect class="glass-panel" x="8" y="264" width="78" height="8" rx="1"/>
+				<rect class="glass-panel" x="94" y="268" width="78" height="8" rx="1"/>
+				<line class="glass" x1="8" y1="268" x2="86" y2="268"/>
+				<line class="glass" x1="94" y1="272" x2="172" y2="272"/>
+			</g>
+
+			<!-- 5. トイレ：横向き・タンク東・東壁密着 -->
+			<g id="toilet" transform="translate(52,286)">
+				<ellipse class="fixture-fill" cx="60" cy="38" rx="38" ry="26"/>
+				<ellipse class="fixture" cx="64" cy="38" rx="20" ry="14"/>
+				<rect class="fixture-fill" x="104" y="14" width="24" height="48" rx="2"/>
+			</g>
+			<text class="sub" x="95" y="360" font-size="11" text-anchor="end">トイレ</text>
+
+			<!-- 6. トイレ–浴室境：全幅ガラス引き戸 -->
+			<g id="glass-door-toilet-bath">
+				<line stroke="#fff" stroke-width="8" x1="0" y1="375" x2="180" y2="375"/>
+				<rect class="glass-panel" x="8" y="369" width="78" height="8" rx="1"/>
+				<rect class="glass-panel" x="94" y="373" width="78" height="8" rx="1"/>
+				<line class="glass" x1="8" y1="373" x2="86" y2="373"/>
+				<line class="glass" x1="94" y1="377" x2="172" y2="377"/>
+			</g>
+
+			<!-- 7. 浴室：浴槽（南北短め）＋東側シャワー -->
+			<text class="sub" x="70" y="398" font-size="11">浴槽</text>
+			<g id="bathtub" transform="translate(10,405)">
+				<rect class="fixture-fill" width="120" height="82" rx="6"/>
+				<rect class="fixture" x="8" y="8" width="104" height="66" rx="5"/>
+				<circle class="fixture" cx="100" cy="41" r="4"/>
+			</g>
+			<g id="shower" transform="translate(142,412)">
+				<line class="fixture" x1="12" y1="0" x2="12" y2="34"/>
+				<circle class="fixture-fill" cx="12" cy="0" r="5"/>
+				<rect class="fixture-fill" x="8" y="30" width="8" height="10" rx="1"/>
+				<line class="fixture" x1="6" y1="6" x2="-4" y2="18" stroke-dasharray="2 3"/>
+				<line class="fixture" x1="12" y1="8" x2="4" y2="22" stroke-dasharray="2 3"/>
+			</g>
+			<text class="sub" x="154" y="490" font-size="10">シャワー</text>
+		</g>
+
+		<!-- ===== 外壁 ===== -->
+		<rect class="wall-out" x="0" y="0" width="900" height="800"/>
+
+		<!-- ===== LDK↔サニタリー西壁（x=720） ===== -->
+		<!-- 北: y300–468 内壁 / 中央: y468–648 開口1.8m / 南: y648–800 内壁 -->
+		<line id="wall-sanitary-n" class="wall-in" x1="720" y1="300" x2="720" y2="468"/>
+		<line id="wall-sanitary-s" class="wall-in" x1="720" y1="648" x2="720" y2="800"/>
+		<g id="door-sanitary">
+			<line stroke="#fff" stroke-width="12" x1="720" y1="468" x2="720" y2="648"/>
+			<!-- 引き戸2枚をLDK側（西側）に縦並び -->
+			<rect class="slider" x="696" y="474" width="16" height="82" rx="1"/>
+			<rect class="slider" x="696" y="560" width="16" height="82" rx="1"/>
+			<text class="sub" x="676" y="562" font-size="10" text-anchor="end">引き戸</text>
+		</g>
+
+		<!-- ===== 玄関（南西 x0–200, y600–800） ===== -->
+		<line class="wall-thin" x1="0" y1="600" x2="160" y2="600"/>
+		<line class="wall-thin" x1="200" y1="600" x2="200" y2="800"/>
+
+		<!-- 西側外壁開口＋引き戸1枚（開時・外壁外側＝西） -->
+		<g id="door-genkan">
+			<line stroke="#fff" stroke-width="16" x1="0" y1="600" x2="0" y2="800"/>
+			<rect class="slider" x="-22" y="604" width="16" height="192" rx="1"/>
+			<text class="sub" x="-42" y="704" font-size="11" text-anchor="end" transform="rotate(-90,-42,704)">引き戸 2.0m（開時・外側）</text>
+		</g>
+
+		<!-- シューボックス 0.4×2.0m（x160–200, y600–800） -->
+		<g id="shoebox">
+			<rect class="fixture-fill" x="160" y="600" width="40" height="200"/>
+			<line class="fixture" x1="160" y1="650" x2="200" y2="650"/>
+			<line class="fixture" x1="160" y1="700" x2="200" y2="700"/>
+			<line class="fixture" x1="160" y1="750" x2="200" y2="750"/>
+			<text class="sub" x="180" y="710" font-size="11" transform="rotate(-90,180,710)">シューボックス</text>
+		</g>
+
+		<!-- ===== 北帯：移動式カーテン（x=300, x=600） ===== -->
+		<g id="curtains">
+			<line class="curtain" x1="300" y1="12" x2="300" y2="288"/>
+			<circle cx="300" cy="40"  r="3.5" fill="#444"/>
+			<circle cx="300" cy="100" r="3.5" fill="#444"/>
+			<circle cx="300" cy="160" r="3.5" fill="#444"/>
+			<circle cx="300" cy="220" r="3.5" fill="#444"/>
+			<circle cx="300" cy="270" r="3.5" fill="#444"/>
+			<line class="curtain" x1="600" y1="12" x2="600" y2="288"/>
+			<circle cx="600" cy="40"  r="3.5" fill="#444"/>
+			<circle cx="600" cy="100" r="3.5" fill="#444"/>
+			<circle cx="600" cy="160" r="3.5" fill="#444"/>
+			<circle cx="600" cy="220" r="3.5" fill="#444"/>
+			<circle cx="600" cy="270" r="3.5" fill="#444"/>
+		</g>
+
+		<!-- ===== 北帯–LDK境 y=300：壁なし・全幅9.0m 3枚引き戸（各3.0m・LDK側へ開） ===== -->
+		<g id="door-north-slider">
+			<line stroke="#fff" stroke-width="14" x1="0" y1="300" x2="900" y2="300"/>
+			<rect class="slider" x="6"   y="304" width="288" height="18" rx="1"/>
+			<rect class="slider" x="306" y="314" width="288" height="18" rx="1"/>
+			<rect class="slider" x="606" y="304" width="288" height="18" rx="1"/>
+			<line class="fixture" x1="300" y1="300" x2="300" y2="334"/>
+			<line class="fixture" x1="600" y1="300" x2="600" y2="334"/>
+			<text class="sub" x="150" y="294" font-size="11">3.0m</text>
+			<text class="sub" x="450" y="294" font-size="11">3.0m</text>
+			<text class="sub" x="750" y="294" font-size="11">3.0m</text>
+			<text class="sub" x="450" y="356" font-size="12">３枚引き戸（各 3.0m・全幅 9.0m）</text>
+		</g>
+
+		<!-- ===== キッチン（南・x200–720付近・下部収納付き） ===== -->
+		<g id="kitchen">
+			<rect class="fixture-fill" x="200" y="738" width="520" height="62"/>
+			<!-- 冷蔵庫（破線） -->
+			<rect class="diminish" x="210" y="746" width="72" height="46" rx="2"/>
+			<line class="diminish" x1="246" y1="746" x2="246" y2="792"/>
+			<text class="sub" x="246" y="728" font-size="11" fill="#666">冷蔵庫</text>
+			<!-- 収納（破線） -->
+			<rect class="diminish" x="294" y="746" width="100" height="46" rx="2"/>
+			<line class="diminish" x1="344" y1="746" x2="344" y2="792"/>
+			<text class="sub" x="344" y="728" font-size="11" fill="#666">収納</text>
+			<!-- コンロ据置（破線） -->
+			<g id="stove">
+				<rect class="diminish" x="420" y="744" width="84" height="50" rx="2"/>
+				<circle class="diminish" cx="444" cy="769" r="11"/>
+				<circle class="diminish" cx="480" cy="769" r="11"/>
+				<text class="sub" x="462" y="728" font-size="11" fill="#666">コンロ（据置）</text>
+			</g>
+			<!-- シンク（実線・サニタリー寄り） -->
+			<g id="sink">
+				<rect class="fixture" x="610" y="748" width="90" height="42" rx="3"/>
+				<ellipse class="fixture" cx="655" cy="769" rx="24" ry="13"/>
+				<line class="fixture" x1="655" y1="748" x2="655" y2="740"/>
+				<line class="fixture" x1="642" y1="740" x2="668" y2="740"/>
+				<text class="sub" x="655" y="728" font-size="11">シンク</text>
+			</g>
+			<text class="sub" x="460" y="788" font-size="12">キッチン（下部収納・南側一杯）</text>
+		</g>
+
+		<!-- ===== 室名 ===== -->
+		<text class="room" x="150" y="128">ワークスペース</text>
+		<text class="sub"  x="150" y="154">約 9.0㎡（3.0m × 3.0m）</text>
+		<text class="sub"  x="150" y="174" font-size="12">移動式カーテン仕切り</text>
+
+		<text class="room" x="450" y="138">寝室</text>
+		<text class="sub"  x="450" y="164">約 9.0㎡（3.0m × 3.0m）</text>
+
+		<text class="room" x="750" y="128">クローゼット</text>
+		<text class="sub"  x="750" y="154">約 9.0㎡（3.0m × 3.0m）</text>
+		<text class="sub"  x="750" y="174" font-size="12">移動式カーテン仕切り</text>
+
+		<text class="room" x="360" y="480">ＬＤＫ 約32.0㎡</text>
+
+		<text class="room" x="100" y="678" font-size="16">玄関</text>
+		<text class="sub"  x="100" y="700" font-size="12">2.0m × 2.0m</text>
+
+		<text class="sub" x="678" y="420" font-size="12" text-anchor="end">サニタリー ▶</text>
+		<text class="sub" x="810" y="290" font-size="11">1.8×5.0m</text>
+	</g>
+
+	<!-- ===== 寸法線 ===== -->
+	<g id="dimensions" transform="translate(110,90)">
+		<!-- 北外側：全幅9.0m ＋ 3.0+3.0+3.0m -->
+		<line class="dim" x1="0" y1="-28" x2="900" y2="-28"/>
+		<line class="dim-tick" x1="0" y1="-36" x2="0" y2="-20"/>
+		<line class="dim-tick" x1="900" y1="-36" x2="900" y2="-20"/>
+		<text class="dim-text" x="450" y="-36">9.0m</text>
+
+		<line class="dim" x1="0" y1="-55" x2="300" y2="-55"/>
+		<line class="dim-tick" x1="0" y1="-63" x2="0" y2="-47"/>
+		<line class="dim-tick" x1="300" y1="-63" x2="300" y2="-47"/>
+		<text class="dim-text" x="150" y="-63">3.0m</text>
+
+		<line class="dim" x1="300" y1="-55" x2="600" y2="-55"/>
+		<line class="dim-tick" x1="600" y1="-63" x2="600" y2="-47"/>
+		<text class="dim-text" x="450" y="-63">3.0m</text>
+
+		<line class="dim" x1="600" y1="-55" x2="900" y2="-55"/>
+		<line class="dim-tick" x1="900" y1="-63" x2="900" y2="-47"/>
+		<text class="dim-text" x="750" y="-63">3.0m</text>
+
+		<!-- 西外側：全高8.0m、北3.0m／南5.0m、玄関2.0m -->
+		<line class="dim" x1="-28" y1="0" x2="-28" y2="800"/>
+		<line class="dim-tick" x1="-36" y1="0" x2="-20" y2="0"/>
+		<line class="dim-tick" x1="-36" y1="800" x2="-20" y2="800"/>
+		<text class="dim-text" x="-48" y="400" transform="rotate(-90,-48,400)">8.0m</text>
+
+		<line class="dim" x1="-55" y1="0" x2="-55" y2="300"/>
+		<line class="dim-tick" x1="-63" y1="0" x2="-47" y2="0"/>
+		<line class="dim-tick" x1="-63" y1="300" x2="-47" y2="300"/>
+		<text class="dim-text" x="-75" y="150" transform="rotate(-90,-75,150)">3.0m</text>
+
+		<line class="dim" x1="-55" y1="300" x2="-55" y2="800"/>
+		<line class="dim-tick" x1="-63" y1="800" x2="-47" y2="800"/>
+		<text class="dim-text" x="-75" y="550" transform="rotate(-90,-75,550)">5.0m</text>
+
+		<line class="dim" x1="-88" y1="600" x2="-88" y2="800"/>
+		<line class="dim-tick" x1="-96" y1="600" x2="-80" y2="600"/>
+		<line class="dim-tick" x1="-96" y1="800" x2="-80" y2="800"/>
+		<text class="dim-text" x="-108" y="700" transform="rotate(-90,-108,700)">2.0m</text>
+
+		<!-- 東外側：サニタリー5.0m -->
+		<line class="dim" x1="928" y1="300" x2="928" y2="800"/>
+		<line class="dim-tick" x1="920" y1="300" x2="936" y2="300"/>
+		<line class="dim-tick" x1="920" y1="800" x2="936" y2="800"/>
+		<text class="dim-text" x="952" y="550" transform="rotate(90,952,550)">5.0m</text>
+
+		<!-- 南外側：玄関2.0m／LDK5.2m／サニタリー1.8m、シューボックス0.4m -->
+		<line class="dim" x1="0" y1="828" x2="200" y2="828"/>
+		<line class="dim-tick" x1="0" y1="820" x2="0" y2="836"/>
+		<line class="dim-tick" x1="200" y1="820" x2="200" y2="836"/>
+		<text class="dim-text" x="100" y="848">2.0m</text>
+
+		<line class="dim" x1="200" y1="828" x2="720" y2="828"/>
+		<line class="dim-tick" x1="720" y1="820" x2="720" y2="836"/>
+		<text class="dim-text" x="460" y="848">5.2m</text>
+
+		<line class="dim" x1="720" y1="828" x2="900" y2="828"/>
+		<line class="dim-tick" x1="900" y1="820" x2="900" y2="836"/>
+		<text class="dim-text" x="810" y="848">1.8m</text>
+
+		<line class="dim" x1="160" y1="868" x2="200" y2="868"/>
+		<line class="dim-tick" x1="160" y1="860" x2="160" y2="876"/>
+		<line class="dim-tick" x1="200" y1="860" x2="200" y2="876"/>
+		<text class="dim-text" x="180" y="888" font-size="14">0.4m</text>
+	</g>
+
+	<text class="title" x="110" y="1000">1LDK 間取り図（約72㎡・ワンルーム寄り）</text>
+	<text class="meta" x="110" y="1024">建物：東西 9.0m × 南北 8.0m　／　縮尺 1:100（100px＝1m）　／　家具なし・設備アイコンのみ</text>
+</svg>

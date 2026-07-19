@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1120" width="1200" height="1120">
+	<defs>
+		<filter id="softShadow" x="-5%" y="-5%" width="110%" height="110%">
+			<feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#1a1f24" flood-opacity="0.10"/>
+		</filter>
+		<style><![CDATA[
+			.paper { fill: #eef1f3; } .card { fill: #ffffff; }
+			.wall-out { fill: none; stroke: #1c2429; stroke-width: 12; }
+			.wall-in { fill: none; stroke: #1c2429; stroke-width: 5; }
+			.wall-thin { fill: none; stroke: #2a343a; stroke-width: 2.5; }
+			.zone { fill: none; stroke: #b7c0c6; stroke-width: 1.4; stroke-dasharray: 6 5; }
+			.glass { fill: none; stroke: #4a6b7c; stroke-width: 2; stroke-dasharray: 7 4; }
+			.curtain { fill: none; stroke: #6b5b4e; stroke-width: 2; stroke-dasharray: 2 5; }
+			.dim { fill: none; stroke: #6a757c; stroke-width: 1; }
+			.dim-tick { stroke: #6a757c; stroke-width: 1; }
+			.dim-text { fill: #4a555c; font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif; font-size: 16px; text-anchor: middle; }
+			.room { fill: #1c2429; font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif; font-size: 19px; font-weight: 600; text-anchor: middle; letter-spacing: 0.06em; }
+			.sub { fill: #5a666e; font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif; font-size: 12px; text-anchor: middle; }
+			.fixture { fill: none; stroke: #1c2429; stroke-width: 1.8; }
+			.fixture-fill { fill: #f3f5f6; stroke: #1c2429; stroke-width: 1.8; }
+			.door-arc { fill: none; stroke: #1c2429; stroke-width: 1.4; }
+			.hero { fill: #1c2429; font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif; font-size: 34px; font-weight: 600; letter-spacing: 0.12em; }
+			.tag { fill: #6a757c; font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif; font-size: 13px; letter-spacing: 0.18em; }
+			.meta { fill: #7a868d; font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif; font-size: 12px; }
+		]]></style>
+	</defs>
+	<rect class="paper" width="1200" height="1120"/>
+	<text class="tag" x="600" y="68" text-anchor="middle">FLOOR PLAN  ·  60㎡</text>
+	<text class="hero" x="600" y="112" text-anchor="middle">1LDK 間取り図</text>
+	<line x1="500" y1="130" x2="700" y2="130" stroke="#c5ced3" stroke-width="1"/>
+	<text class="meta" x="600" y="152" text-anchor="middle">東西 8.0m × 南北 7.5m  ·  縮尺 1:100</text>
+	<rect x="70" y="180" width="1060" height="860" rx="4" class="card" filter="url(#softShadow)"/>
+	<g transform="translate(150,250)">
+		<rect x="0" y="0" width="225" height="250" fill="#ebe4dc"/>
+		<rect x="225" y="0" width="350" height="250" fill="#f4f1ec"/>
+		<rect x="575" y="0" width="225" height="250" fill="#e5e8ea"/>
+		<rect x="0" y="250" width="620" height="500" fill="#fafbfc"/>
+		<rect x="0" y="590" width="140" height="160" fill="#eceff1"/>
+		<g transform="translate(620,250)">
+			<rect x="0" y="0" width="180" height="180" fill="#e8eef0"/>
+			<rect x="0" y="180" width="180" height="115" fill="#f7fafb"/>
+			<rect x="0" y="295" width="180" height="115" fill="#eef3f5"/>
+			<rect x="0" y="410" width="180" height="90" fill="#dde8ec"/>
+			<line class="zone" x1="0" y1="180" x2="180" y2="180"/>
+			<line class="zone" x1="0" y1="295" x2="180" y2="295"/>
+			<text class="sub" x="96" y="152" font-size="10" fill="#8a969c">脱衣・洗濯</text>
+			<line class="glass" x1="90" y1="410" x2="180" y2="410"/>
+			<line class="glass" x1="0" y1="405" x2="94" y2="405"/>
+			<text class="sub" x="45" y="392" font-size="10">ガラス引き戸</text>
+			<g transform="translate(15,12)">
+				<rect class="fixture-fill" width="70" height="66" rx="2"/>
+				<circle class="fixture" cx="35" cy="33" r="21"/>
+				<circle class="fixture" cx="35" cy="33" r="9"/>
+				<text class="sub" x="35" y="86" font-size="11">洗濯機</text>
+			</g>
+			<g transform="translate(95,12)">
+				<rect class="fixture-fill" width="70" height="66" rx="2"/>
+				<circle class="fixture" cx="35" cy="33" r="21"/>
+				<circle class="fixture" cx="35" cy="33" r="6"/>
+				<line class="fixture" x1="20" y1="18" x2="50" y2="48"/>
+				<text class="sub" x="35" y="86" font-size="11">乾燥機</text>
+			</g>
+			<g transform="translate(65,193) rotate(90,50,44.5)">
+				<rect class="fixture-fill" x="25" y="0" width="50" height="22" rx="2"/>
+				<ellipse class="fixture-fill" cx="50" cy="55" rx="28" ry="34"/>
+				<ellipse class="fixture" cx="50" cy="50" rx="14" ry="19"/>
+			</g>
+			<text class="sub" x="38" y="242" font-size="11">トイレ</text>
+			<g transform="translate(92,318.5) rotate(90,55,34)">
+				<rect class="fixture-fill" x="0" y="8" width="110" height="52" rx="4"/>
+				<ellipse class="fixture" cx="55" cy="34" rx="35" ry="16"/>
+			</g>
+			<text class="sub" x="60" y="352" font-size="11">洗面台</text>
+			<rect class="fixture" x="6" y="414" width="168" height="82" rx="8"/>
+			<g transform="translate(16,418)">
+				<rect class="fixture-fill" width="148" height="74" rx="6"/>
+				<rect class="fixture" x="10" y="10" width="128" height="54" rx="5"/>
+			</g>
+			<text class="sub" x="86" y="459" font-size="11">浴槽（シャワー付）</text>
+		</g>
+		<rect class="wall-out" x="0" y="0" width="800" height="750"/>
+		<line class="wall-in" x1="0" y1="250" x2="360" y2="250"/>
+		<line class="wall-in" x1="440" y1="250" x2="800" y2="250"/>
+		<line class="wall-in" x1="620" y1="250" x2="620" y2="355"/>
+		<line class="wall-in" x1="620" y1="420" x2="620" y2="750"/>
+		<line class="wall-thin" x1="0" y1="590" x2="140" y2="590"/>
+		<line class="wall-thin" x1="140" y1="590" x2="140" y2="610"/>
+		<line class="wall-thin" x1="140" y1="720" x2="140" y2="750"/>
+		<line class="curtain" x1="225" y1="8" x2="225" y2="242"/>
+		<circle cx="225" cy="35" r="3.5" fill="#6b5b4e"/>
+		<circle cx="225" cy="80" r="3.5" fill="#6b5b4e"/>
+		<circle cx="225" cy="125" r="3.5" fill="#6b5b4e"/>
+		<circle cx="225" cy="170" r="3.5" fill="#6b5b4e"/>
+		<circle cx="225" cy="215" r="3.5" fill="#6b5b4e"/>
+		<line class="curtain" x1="575" y1="8" x2="575" y2="242"/>
+		<circle cx="575" cy="35" r="3.5" fill="#6b5b4e"/>
+		<circle cx="575" cy="80" r="3.5" fill="#6b5b4e"/>
+		<circle cx="575" cy="125" r="3.5" fill="#6b5b4e"/>
+		<circle cx="575" cy="170" r="3.5" fill="#6b5b4e"/>
+		<circle cx="575" cy="215" r="3.5" fill="#6b5b4e"/>
+		<path class="door-arc" d="M 360 250 A 80 80 0 0 0 440 250"/>
+		<line class="fixture" x1="360" y1="250" x2="360" y2="170"/>
+		<path class="door-arc" d="M 685 420 A 65 65 0 0 1 620 355"/>
+		<line class="fixture" x1="620" y1="420" x2="685" y2="420"/>
+		<line stroke="#ffffff" stroke-width="16" x1="0" y1="630" x2="0" y2="730"/>
+		<path class="door-arc" d="M 0 630 A 90 90 0 0 0 90 730"/>
+		<line class="fixture" x1="0" y1="630" x2="90" y2="630"/>
+		<polygon class="fixture-fill" points="400,602 468,602 468,704 620,704 620,750 400,750"/>
+		<rect class="fixture" x="430" y="714" width="60" height="30" rx="2"/>
+		<circle class="fixture" cx="445" cy="729" r="8"/>
+		<circle class="fixture" cx="475" cy="729" r="8"/>
+		<rect class="fixture" x="540" y="714" width="52" height="30" rx="3"/>
+		<ellipse class="fixture" cx="566" cy="729" rx="15" ry="9"/>
+		<text class="room" x="112" y="95" font-size="15">ワークスペース</text>
+		<text class="sub" x="112" y="116">約 5.6㎡（2.3×2.5m）</text>
+		<text class="room" x="400" y="110">寝室</text>
+		<text class="sub" x="400" y="132">約 8.8㎡（3.5×2.5m）</text>
+		<text class="room" x="687" y="95" font-size="15">クローゼット</text>
+		<text class="sub" x="687" y="116">約 5.6㎡（2.3×2.5m）</text>
+		<text class="room" x="260" y="484">ＬＤＫ</text>
+		<text class="sub" x="260" y="508">約 31.0㎡</text>
+		<text class="sub" x="510" y="694" font-size="12">キッチン</text>
+		<text class="sub" x="392" y="638" font-size="12" text-anchor="end">朝食カウンター</text>
+		<text class="room" x="70" y="676" font-size="14">玄関</text>
+		<text class="sub" x="608" y="387" font-size="12" text-anchor="end">サニタリー ▶</text>
+		<g transform="translate(758,36)">
+			<circle class="fixture" cx="0" cy="0" r="18" fill="#fff"/>
+			<polygon points="0,-13 5,6 0,3 -5,6" fill="#1c2429"/>
+			<text class="sub" x="0" y="30" font-size="11">北</text>
+		</g>
+		<line class="dim" x1="0" y1="-24" x2="800" y2="-24"/>
+		<line class="dim-tick" x1="0" y1="-32" x2="0" y2="-16"/>
+		<line class="dim-tick" x1="800" y1="-32" x2="800" y2="-16"/>
+		<text class="dim-text" x="400" y="-32">8.0m</text>
+		<line class="dim" x1="0" y1="-50" x2="225" y2="-50"/>
+		<line class="dim-tick" x1="225" y1="-58" x2="225" y2="-42"/>
+		<text class="dim-text" x="112" y="-58">2.3m</text>
+		<line class="dim" x1="225" y1="-50" x2="575" y2="-50"/>
+		<line class="dim-tick" x1="575" y1="-58" x2="575" y2="-42"/>
+		<text class="dim-text" x="400" y="-58">3.5m</text>
+		<line class="dim" x1="575" y1="-50" x2="800" y2="-50"/>
+		<line class="dim-tick" x1="800" y1="-58" x2="800" y2="-42"/>
+		<text class="dim-text" x="687" y="-58">2.3m</text>
+		<line class="dim" x1="-24" y1="0" x2="-24" y2="750"/>
+		<line class="dim-tick" x1="-32" y1="0" x2="-16" y2="0"/>
+		<line class="dim-tick" x1="-32" y1="750" x2="-16" y2="750"/>
+		<text class="dim-text" x="-44" y="375" transform="rotate(-90,-44,375)">7.5m</text>
+		<line class="dim" x1="-50" y1="0" x2="-50" y2="250"/>
+		<line class="dim-tick" x1="-58" y1="250" x2="-42" y2="250"/>
+		<text class="dim-text" x="-70" y="125" transform="rotate(-90,-70,125)">2.5m</text>
+		<line class="dim" x1="-50" y1="250" x2="-50" y2="750"/>
+		<text class="dim-text" x="-70" y="500" transform="rotate(-90,-70,500)">5.0m</text>
+		<line class="dim" x1="620" y1="774" x2="800" y2="774"/>
+		<line class="dim-tick" x1="620" y1="766" x2="620" y2="782"/>
+		<line class="dim-tick" x1="800" y1="766" x2="800" y2="782"/>
+		<text class="dim-text" x="710" y="794">1.8m</text>
+		<line class="dim" x1="0" y1="774" x2="620" y2="774"/>
+		<text class="dim-text" x="310" y="794">6.2m</text>
+	</g>
+	<text class="meta" x="600" y="1075" text-anchor="middle">寝室 3.5×2.5m  ·  サニタリー／キッチン／玄関は72㎡案と同寸  ·  ワーク・クロゼット各 2.3×2.5m</text>
+</svg>

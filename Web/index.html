@@ -374,16 +374,13 @@ aside details {
 ;	margin-top				: 5px
 }
 aside summary {
+;	position				: relative
 ;	cursor					: pointer
 ;	font-size				: 13px
 ;	margin-bottom			: 3px
 }
-.ai-panel {
-;	display					: flex
-;	flex-direction			: column
-;	gap						: 4px
-}
-ai-assistant {
+ai-assistant
+,	float-panel {
 ;	display					: flex
 ;	flex-direction			: column
 ;	gap						: 4px
@@ -449,18 +446,19 @@ ai-assistant {
 ;	font-family				: inherit
 ;	font-size				: 12px
 }
-.ai-head {
+.float-head {
 ;	display					: flex
 ;	align-items				: center
 ;	gap						: 4px
 }
-.ai-head-title {
+.float-head-title {
 ;	display					: none
 ;	font-weight				: 600
 ;	font-size				: 12px
 ;	white-space				: nowrap
 }
-.ai-head .ai-float-btn {
+.float-head .float-btn
+,	aside summary .float-btn {
 ;	display					: inline-flex
 ;	align-items				: center
 ;	justify-content			: center
@@ -473,7 +471,7 @@ ai-assistant {
 ;	line-height				: 1
 ;	cursor					: pointer
 }
-.ai-panel.floating {
+.float-panel.floating {
 ;	position				: fixed
 ;	top						: 50%
 ;	left					: 50%
@@ -493,9 +491,23 @@ ai-assistant {
 ;	color					: var( --color-popup-fg )
 ;	box-shadow				: 0 8px 28px var( --color-shadow )
 }
-.ai-panel.floating .ai-head			{ cursor: move }
-.ai-panel.floating .ai-head-title	{ display: block }
-.ai-panel.floating .ai-log			{ max-height: none; flex: 1 1 auto }
+.float-panel.floating .float-head		{ cursor: move }
+.float-panel.floating .float-head-title	{ display: block }
+.float-panel.floating .ai-log			{ max-height: none; flex: 1 1 auto }
+/*	<float-panel> puts its float button in the <summary>; the in-panel head
+	only appears while floating ( title + drag handle ). Absolute, not float:
+	a float would shrink the flex panel below and sit low in the line box. */
+aside summary .float-btn {
+;	position				: absolute
+;	right					: 0
+;	top						: 50%
+;	transform				: translateY( -50% )
+}
+aside summary .float-btn:hover	{ transform: translateY( calc( -50% - 1px ) ) }
+aside summary .float-btn:active	{ transform: translateY( -50% ) }
+.float-panel:not( .floating ) > .float-head {
+;	display					: none
+}
 aside select {
 ;	cursor				: pointer
 ;	appearance			: none
@@ -661,7 +673,6 @@ prop-editor.defaults .only-el	{ display: none }
 ;	flex-direction	: column
 ;	justify-content	: center
 ;	gap				: 4px
-;	width			: 340px
 }
 .file-panel .file-row {
 ;	display			: flex
@@ -669,18 +680,15 @@ prop-editor.defaults .only-el	{ display: none }
 ;	gap				: 4px
 }
 .file-panel .file-row .file-btn {
-;	flex			: 1 1 0
+;	flex			: 0 0 auto
 ;	width			: auto
 ;	white-space		: nowrap
 }
-.file-panel .file-row-open .file-btn {
-;	flex			: 0 0 auto
-;	padding			: 5px
-}
+.file-panel .file-row-open .file-btn	{ padding: 5px }
 .file-panel .file-name {
 ;	flex			: 1 1 auto
 ;	width			: auto
-;	min-width		: 0
+;	min-width		: 120px
 }
 .file-btn {
 ;	display				: inline-flex

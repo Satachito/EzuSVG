@@ -18,9 +18,9 @@
 		s.src = `https://www.googletagmanager.com/gtag/js?id=${ id }`
 		document.head.appendChild( s )
 		window.dataLayer = window.dataLayer || []
-		function gtag(){ dataLayer.push( arguments ) }
-		gtag( 'js', new Date() )
-		gtag( 'config', id )
+		window.gtag = function(){ dataLayer.push( arguments ) }
+		window.gtag( 'js', new Date() )
+		window.gtag( 'config', id )
 	}
 }
 </script>
@@ -952,6 +952,7 @@ import {
 ,	exportPNG
 ,	printPDF
 }	from './Export.js'
+import { track } from './Analytics.js'
 
 const
 isLocalDev = /^(localhost|127\.0\.0\.1|\[::1\])$/.test( location.hostname )
@@ -1024,6 +1025,7 @@ const
 LoadSample = async ( path, name ) => {
 	await loadSVGFile( path, { SyncDocInputs, FILE_NAME } )
 	FILE_NAME.value = name
+	track( 'sample_open' )
 }
 SAMPLE_ICONS		.onclick = () => LoadSample( 'Samples/Icons.svg',		'Icons'		).catch( Report )
 SAMPLE_LANDSCAPE	.onclick = () => LoadSample( 'Samples/Landscape.svg',	'Landscape'	).catch( Report )
@@ -1061,9 +1063,11 @@ UPLOAD		.onchange = async ev => {
 		}
 	}
 }
-DOWNLOAD	.onclick = () => saveSVG( FILE_NAME.value )
-EXPORT_PNG	.onclick = () => exportPNG( FILE_NAME.value ).catch( Report )
-EXPORT_PDF	.onclick = () => { try { printPDF( FILE_NAME.value ) } catch ( er ) { Report( er ) } }
+DOWNLOAD	.onclick = () => { saveSVG( FILE_NAME.value ); track( 'export_svg' ) }
+EXPORT_PNG	.onclick = () => exportPNG( FILE_NAME.value ).then(
+	() => track( 'export_png' )
+).catch( Report )
+EXPORT_PDF	.onclick = () => { try { printPDF( FILE_NAME.value ); track( 'export_pdf' ) } catch ( er ) { Report( er ) } }
 COPY_SVG	.onclick = async () => {
 	const
 	label = COPY_SVG.querySelector( 'span' )
@@ -1093,6 +1097,7 @@ initAIPanels = () => {
 	for ( const el of [ AI_PANEL, OAI_PANEL ] ) {
 		el.systemWithModel	= systemWithModel
 		el.applyOps			= ops => window.EZU.apply( ops )
+		el.onSend			= () => track( 'ai_send' )
 	}
 }
 initAIPanels()

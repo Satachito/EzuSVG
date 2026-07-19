@@ -74,6 +74,13 @@ cd ../tools && npm install   # MCP (one-time)
 Open `http://localhost:8283/?svg=Samples/Icons.svg`. Enable the **`ezusvg`**
 MCP server in Cursor (**Settings → Tools & MCP**) or use [.mcp.json](.mcp.json).
 
+## Feedback
+
+Found a bug or have an idea for an SVG editing workflow? Please use the
+[feedback form on GitHub](https://github.com/Satachito/EzuSVG/issues/new/choose).
+Issue forms are available in English and Japanese. Do not include API keys or
+other secrets.
+
 Tools: `ezu_status` · `ezu_get_svg` · `ezu_get_selection` · `ezu_select` ·
 `ezu_apply` (same ops as `window.EZU.apply`; one call = one undo step) ·
 `ezu_load_file` · `ezu_save_file`.

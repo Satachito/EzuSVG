@@ -1,0 +1,38 @@
+name: Bug report
+description: Tell us what did not work as expected.
+title: "bug: "
+labels: [ bug ]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve EzuSVG. Please do not include API keys or other secrets.
+        EzuSVGの改善にご協力ありがとうございます。APIキーなどの秘密情報は書かないでください。
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: What did you expect, and what happened instead? / 期待した結果と実際の結果を教えてください。
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps, sample name, or a sanitized SVG. / 再現手順、サンプル名、または秘密情報を除いたSVGを教えてください。
+      placeholder: |
+        1. Open a sample
+        2. Click Export PNG
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser, version, OS, and device. / ブラウザ、バージョン、OS、端末。
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context
+      description: Screenshots or anything else that may help. / スクリーンショットなど補足情報。
